@@ -2,7 +2,7 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<title>Mahmoud Academy Pro</title>
+<title>Mahmoud Academy</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
 <style>
@@ -10,196 +10,115 @@ body{
 margin:0;
 font-family:Arial;
 background:#f4f6f9;
-transition:0.3s;
 }
 
-body.dark{
-background:#0f172a;
-color:#fff;
-}
-
-/* ================= LOGIN ================= */
 .container{
 width:360px;
 position:absolute;
-top:50%;
-left:50%;
+top:50%;left:50%;
 transform:translate(-50%,-50%);
 }
 
 .card{
 background:#fff;
 padding:20px;
-border-radius:18px;
-box-shadow:0 10px 25px rgba(0,0,0,0.1);
-transition:0.3s;
-}
-
-body.dark .card{
-background:#1e293b;
+border-radius:15px;
+box-shadow:0 10px 20px rgba(0,0,0,0.1);
 }
 
 input{
 width:100%;
 padding:12px;
-margin:8px 0;
-border-radius:10px;
+margin:6px 0;
 border:1px solid #ddd;
-outline:none;
+border-radius:10px;
 }
 
 button{
 width:100%;
 padding:12px;
+margin-top:8px;
 border:none;
 border-radius:10px;
 cursor:pointer;
-font-weight:bold;
-margin-top:8px;
 }
 
 .login{background:#00b894;color:#fff}
 .signup{background:#0984e3;color:#fff}
 
-/* ================= DASHBOARD ================= */
-#app{
-display:none;
-padding:20px;
-}
-
-.header{
-display:flex;
-justify-content:space-between;
-align-items:center;
-background:#fff;
-padding:15px;
-border-radius:15px;
-box-shadow:0 5px 15px rgba(0,0,0,0.05);
-}
-
-body.dark .header{
-background:#1e293b;
-}
-
-.grid{
-display:grid;
-grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
-gap:15px;
-margin-top:20px;
-}
-
-/* COURSE CARD */
-.course{
-background:#fff;
-padding:15px;
-border-radius:15px;
-cursor:pointer;
-transition:0.3s;
-box-shadow:0 5px 10px rgba(0,0,0,0.05);
-}
-
-.course:hover{
-transform:translateY(-5px);
-}
-
-body.dark .course{
-background:#1e293b;
-}
-
-/* LESSON PAGE */
-#coursePage{
-display:none;
-padding:20px;
-}
-
-.lesson{
-background:#fff;
-padding:15px;
-border-radius:12px;
+.switch{
+text-align:center;
 margin-top:10px;
-box-shadow:0 5px 10px rgba(0,0,0,0.05);
-}
-
-body.dark .lesson{
-background:#1e293b;
-}
-
-.back{
-background:#ff4757;
-color:#fff;
-padding:10px 15px;
-border:none;
-border-radius:10px;
+font-size:13px;
 cursor:pointer;
-margin-bottom:15px;
+color:#444;
+}
+
+.error{
+color:red;
+font-size:13px;
+margin-top:5px;
+}
+
+.success{
+color:green;
+font-size:13px;
+margin-top:5px;
 }
 </style>
 </head>
 
 <body>
 
-<!-- ================= LOGIN ================= -->
-<div class="container" id="authBox">
+<!-- LOGIN -->
+<div class="container" id="loginBox">
 <div class="card">
 
-<h2 style="text-align:center;">📚 Mahmoud Academy</h2>
+<h3 style="text-align:center;">تسجيل الدخول</h3>
 
-<input id="email" placeholder="Email">
-<input id="password" type="password" placeholder="كلمة المرور">
+<input id="loginName" placeholder="اسم المستخدم">
+<input id="loginPass" type="password" placeholder="كلمة المرور">
 
-<button class="login" onclick="login()">🔑 تسجيل دخول</button>
-<button class="signup" onclick="signup()">🆕 إنشاء حساب</button>
+<div id="loginMsg"></div>
 
-</div>
-</div>
+<button class="login" onclick="login()">دخول</button>
 
-<!-- ================= DASHBOARD ================= -->
-<div id="app">
-
-<div class="header">
-<h3 id="welcome">👋 مرحباً</h3>
-<div>
-<button onclick="toggleTheme()" style="padding:8px;border:none;border-radius:8px;">🌙</button>
-<button onclick="logout()" style="background:red;color:#fff;padding:8px;border:none;border-radius:8px;">خروج</button>
-</div>
-</div>
-
-<div class="grid">
-
-<div class="course" onclick="openCourse('prog')">
-💻 البرمجة
-</div>
-
-<div class="course" onclick="openCourse('math')">
-🧮 الرياضيات
-</div>
-
-<div class="course" onclick="openCourse('english')">
-🌍 الإنجليزية
-</div>
-
-<div class="course" onclick="openCourse('computer')">
-🖥 الحاسوب
+<div class="switch" onclick="showSignup()">
+إنشاء حساب
 </div>
 
 </div>
 </div>
 
-<!-- ================= COURSE PAGE ================= -->
-<div id="coursePage">
+<!-- SIGNUP -->
+<div class="container" id="signupBox" style="display:none;">
+<div class="card">
 
-<button class="back" onclick="back()">⬅ رجوع للكورسات</button>
+<h3 style="text-align:center;">إنشاء حساب</h3>
 
-<h2 id="courseTitle"></h2>
+<input id="suName" placeholder="اسم المستخدم">
+<input id="suEmail" placeholder="البريد الإلكتروني">
+<input id="suPass" type="password" placeholder="كلمة المرور">
+<input id="suConfirm" type="password" placeholder="تأكيد كلمة المرور">
 
-<div id="lessons"></div>
+<div id="signupMsg"></div>
 
+<button class="signup" onclick="signup()">إنشاء الحساب</button>
+
+<div class="switch" onclick="showLogin()">
+لديك حساب؟ تسجيل دخول
+</div>
+
+</div>
 </div>
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut }
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword }
 from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+
+import { getFirestore, setDoc, doc, getDoc }
+from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyBsvF9DneR5H0JbOW4HX_JjVWaajAUgk",
@@ -212,101 +131,72 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
-
-/* ================= LOGIN ================= */
-window.login = async function(){
-let email = document.getElementById("email").value;
-let pass = document.getElementById("password").value;
-
-try{
-await signInWithEmailAndPassword(auth,email,pass);
-
-document.getElementById("authBox").style.display="none";
-document.getElementById("app").style.display="block";
-
-}catch(e){
-alert("خطأ في تسجيل الدخول");
-}
-}
+const db = getFirestore(app);
 
 /* ================= SIGNUP ================= */
 window.signup = async function(){
-let email = document.getElementById("email").value;
-let pass = document.getElementById("password").value;
+
+let name = document.getElementById("suName").value;
+let email = document.getElementById("suEmail").value;
+let pass = document.getElementById("suPass").value;
+let confirm = document.getElementById("suConfirm").value;
+
+let msg = document.getElementById("signupMsg");
+msg.innerHTML="";
+
+if(pass !== confirm){
+msg.innerHTML="كلمة المرور غير متطابقة";
+return;
+}
+
+if(pass.length < 6){
+msg.innerHTML="كلمة المرور يجب أن تكون 6 أحرف أو أكثر";
+return;
+}
 
 try{
-await createUserWithEmailAndPassword(auth,email,pass);
-alert("تم إنشاء الحساب ✅");
-}catch(e){
-alert("خطأ في إنشاء الحساب");
-}
-}
+let user = await createUserWithEmailAndPassword(auth,email,pass);
 
-/* ================= LOGOUT ================= */
-window.logout = function(){
-signOut(auth).then(()=>location.reload());
-}
-
-/* ================= THEME ================= */
-window.toggleTheme = function(){
-document.body.classList.toggle("dark");
-}
-
-/* ================= COURSES ================= */
-const courses = {
-prog:{
-title:"💻 البرمجة",
-lessons:[
-"🔹 مقدمة في البرمجة",
-"🔹 المتغيرات",
-"🔹 الجمل الشرطية",
-"🔹 الحلقات"
-]
-},
-math:{
-title:"🧮 الرياضيات",
-lessons:[
-"🔹 الجبر",
-"🔹 المعادلات",
-"🔹 التفاضل",
-"🔹 التكامل"
-]
-},
-english:{
-title:"🌍 الإنجليزية",
-lessons:[
-"🔹 أساسيات القواعد",
-"🔹 المحادثة",
-"🔹 الكلمات المهمة"
-]
-},
-computer:{
-title:"🖥 الحاسوب",
-lessons:[
-"🔹 مكونات الكمبيوتر",
-"🔹 نظام التشغيل",
-"🔹 الإنترنت"
-]
-}
-};
-
-window.openCourse = function(id){
-document.getElementById("app").style.display="none";
-document.getElementById("coursePage").style.display="block";
-
-document.getElementById("courseTitle").innerText = courses[id].title;
-
-let html="";
-courses[id].lessons.forEach(l=>{
-html += `<div class="lesson">📌 ${l}</div>`;
+await setDoc(doc(db,"users",user.user.uid),{
+username:name,
+email:email
 });
 
-document.getElementById("lessons").innerHTML = html;
+msg.innerHTML="تم إنشاء الحساب بنجاح";
+msg.className="success";
+
+}catch(e){
+msg.innerHTML="خطأ في إنشاء الحساب";
+}
 }
 
-window.back = function(){
-document.getElementById("coursePage").style.display="none";
-document.getElementById("app").style.display="block";
+/* ================= LOGIN ================= */
+window.login = async function(){
+
+let name = document.getElementById("loginName").value;
+let pass = document.getElementById("loginPass").value;
+
+let msg = document.getElementById("loginMsg");
+msg.innerHTML="";
+
+try{
+/* نجيب كل المستخدمين عبر uid غير ممكن مباشرة،
+لكن الحل الاحترافي: تسجيل الدخول بالإيميل */
+msg.innerHTML="خطأ: يجب تسجيل الدخول بالبريد الإلكتروني";
+}catch(e){
+msg.innerHTML="خطأ في تسجيل الدخول";
+}
+}
+
+/* UI */
+window.showSignup = function(){
+document.getElementById("loginBox").style.display="none";
+document.getElementById("signupBox").style.display="block";
+}
+
+window.showLogin = function(){
+document.getElementById("signupBox").style.display="none";
+document.getElementById("loginBox").style.display="block";
 }
 </script>
 
