@@ -66,34 +66,49 @@ box-shadow:0 5px 20px rgba(0,0,0,0.1);
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
 
 <script>
+// الاتصال
 const supabase = window.supabase.createClient(
   "https://nbwpawotguxrgsfpqzwg.supabase.co",
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5id3Bhd290Z3V4cmdzZnBxendnIiwicm9sZSI6ImFub24يIsImlhdCI6MTc3NjIwNjk0MSwiZXhwIjoyMDkxNzgyOTQxfQ.z3jPqnTrciajQy9jVzIAN95RCqJjQPIZQGIuM34kNKM"
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5id3Bhd290Z3V4cmdzZnBxendnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYyMDY5NDEsImV4cCI6MjA5MTc4Mjk0MX0.z3jPqnTrciajQy9jVzIAN95RCqJjQPIZQGIuM34kNKM"
 );
 
-// تسجيل حساب
+// إنشاء حساب
 async function signup(){
-  const email = document.getElementById("email").value;
-  const password = document.getElementById("password").value;
+  const email = document.getElementById("email").value.trim();
+  const password = document.getElementById("password").value.trim();
 
-  const { error } = await supabase.auth.signUp({ email, password });
+  if(!email || !password){
+    alert("اكتب الإيميل وكلمة المرور");
+    return;
+  }
+
+  const { data, error } = await supabase.auth.signUp({ email, password });
+
+  console.log(data, error);
 
   if(error){
-    alert(error.message);
+    alert("❌ " + error.message);
   }else{
-    alert("تم إنشاء الحساب ✅");
+    alert("✅ تم إنشاء الحساب بنجاح");
   }
 }
 
 // تسجيل دخول
 async function login(){
-  const email = document.getElementById("email").value;
-  const password = document.getElementById("password").value;
+  const email = document.getElementById("email").value.trim();
+  const password = document.getElementById("password").value.trim();
 
-  const { error } = await supabase.auth.signInWithPassword({ email, password });
+  if(!email || !password){
+    alert("اكتب الإيميل وكلمة المرور");
+    return;
+  }
+
+  const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+
+  console.log(data, error);
 
   if(error){
-    alert(error.message);
+    alert("❌ " + error.message);
   }
 }
 
@@ -103,8 +118,10 @@ async function logout(){
   location.reload();
 }
 
-// التحقق من الجلسة
+// متابعة حالة المستخدم
 supabase.auth.onAuthStateChange((event, session) => {
+  console.log("Auth:", event, session);
+
   if(session){
     document.getElementById("authBox").style.display="none";
     document.getElementById("app").style.display="block";
