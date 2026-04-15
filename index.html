@@ -16,12 +16,23 @@
 <input type="password" id="logPass" placeholder="Password">
 <button onclick="login()">Login</button>
 
+<h2>اكتب بوست</h2>
+<input type="text" id="postInput" placeholder="اكتب هنا">
+<button onclick="addPost()">نشر</button>
+
+<ul id="postsList"></ul>
+  
 <br><br>
 <button onclick="logout()">Logout</button>
 
 <p id="status"></p>
 
 <script type="module">
+  import { 
+  collection, 
+  addDoc, 
+  getDocs 
+} from "https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js";
   import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js";
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js";
 import { 
@@ -77,10 +88,43 @@ window.login = async function () {
 };
 
 // ✅ تسجيل خروج
-window.logout = async function () {
-  await signOut(auth);
-  alert("تم تسجيل الخروج");
+window.addPost = async function () {
+  const user = auth.currentUser;
+  const content = document.getElementById("postInput").value;
+
+  if (!user) {
+    alert("لازم تسجل دخول");
+    return;
+  }
+
+  await addDoc(collection(db, "posts"), {
+    userId: user.uid,
+    email: user.email,
+    content: content,
+    createdAt: new Date()
+  });
+
+  alert("تم نشر البوست 🔥");
+  loadPosts();
 };
+
+  async function loadPosts() {
+  const querySnapshot = await getDocs(collection(db, "posts"));
+  const list = document.getElementById("postsList");
+
+  list.innerHTML = "";
+
+  querySnapshot.forEach(doc => {
+    const data = doc.data();
+
+    const li = document.createElement("li");
+    li.textContent = data.email + ": " + data.content;
+
+    list.appendChild(li);
+  });
+}
+
+loadPosts();
 
 // ✅ معرفة حالة المستخدم
 onAuthStateChanged(auth, (user) => {
