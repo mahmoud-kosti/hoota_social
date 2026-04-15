@@ -54,74 +54,73 @@ font-weight:600;
 </nav>
 
 <div class="container mt-4">
-<h3>🎉 تم تسجيل الدخول بنجاح</h3>
+<h3>🎉 تم تسجيل الدخول</h3>
 <p id="userInfo"></p>
 </div>
 
 </div>
 
 <!-- Supabase -->
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 
 <script>
+
+console.log("JS LOADED");
+
+/* ===== CONNECT ===== */
 const supabase = window.supabase.createClient(
   "https://nbwpawotguxrgsfpqzwg.supabase.co",
   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5id3Bhd290Z3V4cmdzZnBxendnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYyMDY5NDEsImV4cCI6MjA5MTc4Mjk0MX0.z3jPqnTrciajQy9jVzIAN95RCqJjQPIZQGIuM34kNKM"
 );
 
-/* ===== UI HELPERS ===== */
-function showStatus(msg, type){
-  const box = document.getElementById("status");
-  box.innerText = msg;
-  box.className = "status " + type;
+/* ===== STATUS ===== */
+function show(msg, type){
+  const el = document.getElementById("status");
+  el.innerText = msg;
+  el.className = "status " + type;
 }
 
 /* ===== SIGNUP ===== */
 async function signup(){
-  const email = document.getElementById("email").value.trim();
-  const password = document.getElementById("password").value.trim();
+  const email = emailEl().value.trim();
+  const password = passEl().value.trim();
 
-  if(!email || !password){
-    showStatus("❌ املأ البيانات", "error");
-    return;
-  }
+  console.log("SIGNUP:", email);
 
   const { data, error } = await supabase.auth.signUp({
     email,
     password
   });
 
+  console.log(data, error);
+
   if(error){
-    showStatus("❌ " + error.message, "error");
-  } else {
-    showStatus("✅ تم إنشاء الحساب بنجاح", "success");
-    console.log("SIGNUP DATA:", data);
+    show(error.message, "error");
+  }else{
+    show("تم إنشاء الحساب ✅", "success");
   }
 }
 
 /* ===== LOGIN ===== */
 async function login(){
-  const email = document.getElementById("email").value.trim();
-  const password = document.getElementById("password").value.trim();
+  const email = emailEl().value.trim();
+  const password = passEl().value.trim();
 
-  if(!email || !password){
-    showStatus("❌ املأ البيانات", "error");
-    return;
-  }
+  console.log("LOGIN:", email);
 
   const { data, error } = await supabase.auth.signInWithPassword({
     email,
     password
   });
 
+  console.log(data, error);
+
   if(error){
-    showStatus("❌ " + error.message, "error");
+    show(error.message, "error");
     return;
   }
 
-  showStatus("✅ تم تسجيل الدخول", "success");
-
-  console.log("LOGIN DATA:", data);
+  show("تم تسجيل الدخول ✅", "success");
 
   document.getElementById("authBox").classList.add("hidden");
   document.getElementById("app").classList.remove("hidden");
@@ -136,7 +135,7 @@ async function logout(){
   location.reload();
 }
 
-/* ===== SESSION CHECK ===== */
+/* ===== SESSION ===== */
 supabase.auth.onAuthStateChange((event, session) => {
   if(session){
     document.getElementById("authBox").classList.add("hidden");
@@ -146,6 +145,11 @@ supabase.auth.onAuthStateChange((event, session) => {
       "User: " + session.user.email;
   }
 });
+
+/* ===== HELPERS ===== */
+function emailEl(){ return document.getElementById("email"); }
+function passEl(){ return document.getElementById("password"); }
+
 </script>
 
 </body>
