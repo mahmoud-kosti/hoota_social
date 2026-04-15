@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+<meta charset="UTF-8">
+<title>User Profile</title>
+
+<style>
+body {
+  margin: 0;
+  font-family: Arial;
+  background: #0f172a;
+  color: white;
+}
+
+.navbar {
+  background: #020617;
+  padding: 15px;
+  text-align: center;
+  font-size: 18px;
+}
+
+.container {
+  max-width: 600px;
+  margin: auto;
+  padding: 15px;
+}
+
+.card {
+  background: #020617;
+  padding: 15px;
+  border-radius: 10px;
+  margin-bottom: 15px;
+}
+
+.post {
+  background: #1e293b;
+  padding: 10px;
+  margin-top: 10px;
+  border-radius: 8px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="navbar">👤 Profile Page</div>
+
+<div class="container">
+
+  <div class="card">
+    <h3 id="email">Loading...</h3>
+    <p id="postCount"></p>
+  </div>
+
+  <div id="myPosts"></div>
+
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js";
+import {
+  getAuth,
+  onAuthStateChanged
+} from "https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js";
+
+import {
+  getFirestore,
+  collection,
+  getDocs
+} from "https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyBsvF9J_DneR5H0JbOW4HX_JjVWaajAUgk",
+  authDomain: "website-8833c.firebaseapp.com",
+  projectId: "website-8833c"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+onAuthStateChanged(auth, async (user) => {
+  if (!user) {
+    window.location.href = "login.html";
+    return;
+  }
+
+  document.getElementById("email").innerText = "Email: " + user.email;
+
+  const snap = await getDocs(collection(db, "posts"));
+
+  let myPosts = [];
+  
+  snap.forEach(doc => {
+    const data = doc.data();
+
+    if (data.userId === user.uid) {
+      myPosts.push(data);
+    }
+  });
+
+  document.getElementById("postCount").innerText =
+    "عدد البوستات: " + myPosts.length;
+
+  const container = document.getElementById("myPosts");
+  container.innerHTML = "";
+
+  myPosts.forEach(p => {
+    container.innerHTML += `
+      <div class="post">
+        ${p.content}
+      </div>
+    `;
+  });
+});
+</script>
+
+</body>
+</html>
