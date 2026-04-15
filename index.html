@@ -9,115 +9,140 @@
 body{
 margin:0;
 font-family:Arial;
-background:linear-gradient(135deg,#0d6efd,#6c5ce7);
+transition:0.4s;
+background:#f4f6f9;
 }
 
-/* ================= AUTH ================= */
-.auth{
-width:350px;
-background:rgba(255,255,255,0.15);
-backdrop-filter:blur(15px);
+/* DARK MODE */
+body.dark{
+background:#0f172a;
+color:#fff;
+}
+
+/* CENTER CARD */
+.container{
+width:360px;
+position:absolute;
+top:50%;
+left:50%;
+transform:translate(-50%,-50%);
+}
+
+/* CARD */
+.card{
+background:#fff;
 padding:20px;
 border-radius:20px;
-color:#fff;
-position:absolute;
-top:50%;left:50%;
-transform:translate(-50%,-50%);
-box-shadow:0 10px 30px rgba(0,0,0,0.2);
+box-shadow:0 10px 25px rgba(0,0,0,0.1);
+transition:0.4s;
 }
 
+body.dark .card{
+background:#1e293b;
+}
+
+/* INPUT */
 input{
 width:100%;
-padding:10px;
-margin:6px 0;
-border:none;
+padding:12px;
+margin:8px 0;
 border-radius:10px;
+border:1px solid #ddd;
 outline:none;
 }
 
+/* BUTTON */
 button{
 width:100%;
-padding:10px;
-margin-top:8px;
+padding:12px;
 border:none;
 border-radius:10px;
 cursor:pointer;
 font-weight:bold;
+margin-top:8px;
 }
 
-.signup{background:#0984e3;color:#fff}
 .login{background:#00b894;color:#fff}
+.signup{background:#0984e3;color:#fff}
 
-/* ================= APP ================= */
-#appBox{
-display:none;
-background:#f4f6f9;
-min-height:100vh;
-}
-
-.header{
-background:#fff;
-padding:15px;
-display:flex;
-justify-content:space-between;
-align-items:center;
-box-shadow:0 5px 15px rgba(0,0,0,0.1);
-}
-
-.grid{
-display:grid;
-grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
-gap:15px;
-padding:20px;
-}
-
-.card{
-background:#fff;
-padding:15px;
-border-radius:15px;
-box-shadow:0 5px 15px rgba(0,0,0,0.1);
+/* SWITCH */
+.switch{
 text-align:center;
+margin-top:10px;
+font-size:13px;
+cursor:pointer;
+color:#555;
+}
+
+body.dark .switch{
+color:#ccc;
+}
+
+/* TOP BAR */
+.topbar{
+position:fixed;
+top:10px;
+right:10px;
+}
+
+.toggle{
+padding:8px 12px;
+border:none;
+border-radius:10px;
+cursor:pointer;
+background:#111;
+color:#fff;
 }
 </style>
 </head>
 
 <body>
 
-<!-- ================= LOGIN ================= -->
-<div class="auth" id="authBox">
-<h3 style="text-align:center;">Mahmoud Academy</h3>
-
-<input id="name" placeholder="اسم المستخدم">
-<input id="email" placeholder="Email">
-<input id="password" type="password" placeholder="Password">
-
-<button class="signup" onclick="signUp()">إنشاء حساب</button>
-<button class="login" onclick="login()">تسجيل دخول</button>
+<!-- DARK TOGGLE -->
+<div class="topbar">
+<button class="toggle" onclick="toggleTheme()">🌙 وضع داكن</button>
 </div>
 
-<!-- ================= APP ================= -->
-<div id="appBox">
+<!-- LOGIN CARD -->
+<div class="container" id="loginBox">
+<div class="card">
 
-<div class="header">
-<h3 id="welcome">مرحباً 👋</h3>
-<button onclick="logout()" style="background:red;color:#fff;border:none;padding:8px 15px;border-radius:10px;">
-خروج
-</button>
-</div>
+<h2 style="text-align:center;">تسجيل دخول</h2>
 
-<div class="grid">
-<div class="card">📚 البرمجة</div>
-<div class="card">🧮 الرياضيات</div>
-<div class="card">💻 الحاسوب</div>
-<div class="card">🌐 الإنجليزية</div>
+<input id="loginUser" placeholder="اسم المستخدم">
+<input id="loginPass" type="password" placeholder="كلمة المرور">
+
+<button class="login" onclick="login()">دخول</button>
+
+<div class="switch" onclick="showSignup()">
+ليس لديك حساب؟ إنشاء حساب
 </div>
 
 </div>
+</div>
 
-<!-- ================= FIREBASE ================= -->
+<!-- SIGNUP CARD -->
+<div class="container" id="signupBox" style="display:none;">
+<div class="card">
+
+<h2 style="text-align:center;">إنشاء حساب</h2>
+
+<input id="signupUser" placeholder="اسم المستخدم">
+<input id="signupEmail" placeholder="البريد الإلكتروني">
+<input id="signupPass" type="password" placeholder="كلمة المرور">
+
+<button class="signup" onclick="signup()">إنشاء الحساب</button>
+
+<div class="switch" onclick="showLogin()">
+لديك حساب؟ تسجيل دخول
+</div>
+
+</div>
+</div>
+
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut }
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword }
 from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 
 import { getFirestore, setDoc, doc, getDoc }
@@ -136,45 +161,73 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 
-// ================= SIGN UP =================
-window.signUp = async function(){
+/* ================= SIGNUP ================= */
+window.signup = async function(){
 
-let name = document.getElementById("name").value;
-let email = document.getElementById("email").value;
-let password = document.getElementById("password").value;
+let user = document.getElementById("signupUser").value;
+let email = document.getElementById("signupEmail").value;
+let pass = document.getElementById("signupPass").value;
 
-let user = await createUserWithEmailAndPassword(auth,email,password);
+try{
+let cred = await createUserWithEmailAndPassword(auth,email,pass);
 
-await setDoc(doc(db,"users",user.user.uid),{
-name:name,
+await setDoc(doc(db,"users",cred.user.uid),{
+username:user,
 email:email
 });
 
-alert("تم إنشاء الحساب ✅");
+alert("تم إنشاء الحساب بنجاح ✅");
+showLogin();
+
+}catch(e){
+alert(errorMessage(e.code));
+}
 }
 
-// ================= LOGIN =================
+/* ================= LOGIN ================= */
 window.login = async function(){
 
-let email = document.getElementById("email").value;
-let password = document.getElementById("password").value;
+let user = document.getElementById("loginUser").value;
+let pass = document.getElementById("loginPass").value;
 
-let user = await signInWithEmailAndPassword(auth,email,password);
+try{
+let users = await signInWithEmailAndPassword(auth,user,pass);
 
-let data = await getDoc(doc(db,"users",user.user.uid));
-
-document.getElementById("authBox").style.display="none";
-document.getElementById("appBox").style.display="block";
+let data = await getDoc(doc(db,"users",users.user.uid));
 
 if(data.exists()){
-document.getElementById("welcome").innerText =
-"مرحباً " + data.data().name;
+alert("تم تسجيل الدخول بنجاح ✅");
+}else{
+alert("مستخدم غير موجود");
+}
+
+}catch(e){
+alert(errorMessage(e.code));
 }
 }
 
-// ================= LOGOUT =================
-window.logout = function(){
-signOut(auth).then(()=>location.reload());
+/* ================= ERROR HANDLER ================= */
+function errorMessage(code){
+if(code==="auth/invalid-email") return "بريد إلكتروني غير صحيح";
+if(code==="auth/user-not-found") return "المستخدم غير موجود";
+if(code==="auth/wrong-password") return "كلمة المرور خطأ";
+if(code==="auth/weak-password") return "كلمة المرور ضعيفة (6 أحرف على الأقل)";
+return "حدث خطأ غير متوقع";
+}
+
+/* ================= UI ================= */
+window.showSignup = function(){
+document.getElementById("loginBox").style.display="none";
+document.getElementById("signupBox").style.display="block";
+}
+
+window.showLogin = function(){
+document.getElementById("signupBox").style.display="none";
+document.getElementById("loginBox").style.display="block";
+}
+
+window.toggleTheme = function(){
+document.body.classList.toggle("dark");
 }
 </script>
 
