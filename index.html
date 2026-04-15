@@ -1,3 +1,66 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<title>Mahmoud Technology</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+<style>
+body{font-family:Arial;background:#f4f6f9}
+
+.hero{
+background:linear-gradient(135deg,#0d6efd,#0a58ca);
+color:#fff;
+text-align:center;
+padding:40px;
+}
+
+#appBox{display:none;text-align:center}
+
+.course{
+background:#fff;
+margin:10px;
+padding:15px;
+border-radius:10px;
+cursor:pointer;
+}
+</style>
+</head>
+
+<body>
+
+<!-- AUTH -->
+<div id="authBox" class="container mt-5" style="max-width:400px;">
+<h3 class="text-center">تسجيل / دخول</h3>
+
+<input id="email" class="form-control mb-2" placeholder="Email">
+<input id="password" class="form-control mb-2" placeholder="Password">
+
+<button class="btn btn-primary w-100 mb-2" onclick="signUp()">إنشاء حساب</button>
+<button class="btn btn-success w-100" onclick="login()">تسجيل دخول</button>
+</div>
+
+<!-- APP -->
+<div id="appBox">
+
+<div class="hero">
+<h1>Mahmoud Technology</h1>
+<p>منصة تعليمية</p>
+<button class="btn btn-dark" onclick="logout()">تسجيل خروج</button>
+</div>
+
+<div class="container mt-4">
+<h3>📚 الكورسات</h3>
+
+<div class="course">أساسيات البرمجة</div>
+<div class="course">رياضيات</div>
+
+</div>
+</div>
+
+<!-- FIREBASE (FIXED) -->
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut }
@@ -17,38 +80,41 @@ const auth = getAuth(app);
 
 // ================= SIGN UP =================
 window.signUp = function(){
-  let email = document.getElementById("email").value;
-  let password = document.getElementById("password").value;
+const email = document.getElementById("email").value;
+const password = document.getElementById("password").value;
 
-  createUserWithEmailAndPassword(auth, email, password)
-  .then(()=>{
-    alert("تم إنشاء الحساب ✅");
-  })
-  .catch(err=>{
-    alert(err.message);
-  });
+createUserWithEmailAndPassword(auth, email, password)
+.then(()=>{
+alert("تم إنشاء الحساب ✅");
+})
+.catch(err=>{
+alert(err.message);
+});
 }
 
 // ================= LOGIN =================
 window.login = function(){
-  let email = document.getElementById("email").value;
-  let password = document.getElementById("password").value;
+const email = document.getElementById("email").value;
+const password = document.getElementById("password").value;
 
-  signInWithEmailAndPassword(auth, email, password)
-  .then(()=>{
-    alert("تم تسجيل الدخول ✅");
-    document.getElementById("authBox").style.display="none";
-    document.getElementById("appBox").style.display="block";
-  })
-  .catch(err=>{
-    alert(err.message);
-  });
+signInWithEmailAndPassword(auth, email, password)
+.then(()=>{
+alert("تم تسجيل الدخول ✅");
+document.getElementById("authBox").style.display="none";
+document.getElementById("appBox").style.display="block";
+})
+.catch(err=>{
+alert(err.message);
+});
 }
 
 // ================= LOGOUT =================
 window.logout = function(){
-  signOut(auth).then(()=>{
-    location.reload();
-  });
+signOut(auth).then(()=>{
+location.reload();
+});
 }
 </script>
+
+</body>
+</html>
