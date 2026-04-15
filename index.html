@@ -5,62 +5,120 @@
 <title>Mahmoud Technology</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-
 <style>
-body{font-family:Arial;background:#f4f6f9}
-
-.hero{
-background:linear-gradient(135deg,#0d6efd,#0a58ca);
-color:#fff;
-text-align:center;
-padding:40px;
+body{
+margin:0;
+font-family:Arial;
+background:linear-gradient(135deg,#0d6efd,#6c5ce7);
 }
 
-#appBox{display:none;text-align:center}
+/* ================= LOGIN ================= */
+.auth-card{
+width:350px;
+background:rgba(255,255,255,0.15);
+backdrop-filter:blur(15px);
+border-radius:20px;
+padding:25px;
+color:#fff;
+box-shadow:0 10px 30px rgba(0,0,0,0.2);
+position:absolute;
+top:50%;
+left:50%;
+transform:translate(-50%,-50%);
+animation:fadeIn 0.8s ease;
+}
 
-.course{
-background:#fff;
-margin:10px;
-padding:15px;
+@keyframes fadeIn{
+from{transform:translate(-50%,-40%);opacity:0;}
+to{transform:translate(-50%,-50%);opacity:1;}
+}
+
+input{
+width:100%;
+padding:12px;
+margin:8px 0;
+border:none;
+border-radius:10px;
+outline:none;
+}
+
+button{
+width:100%;
+padding:12px;
+margin-top:10px;
+border:none;
 border-radius:10px;
 cursor:pointer;
+font-weight:bold;
+}
+
+.btn-login{background:#00b894;color:#fff;}
+.btn-signup{background:#0984e3;color:#fff;}
+
+/* ================= APP ================= */
+#appBox{
+display:none;
+background:#f4f6f9;
+min-height:100vh;
+}
+
+.header{
+background:#fff;
+padding:20px;
+text-align:center;
+box-shadow:0 5px 15px rgba(0,0,0,0.1);
+}
+
+.grid{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+gap:15px;
+padding:20px;
+}
+
+.card{
+background:#fff;
+padding:15px;
+border-radius:15px;
+box-shadow:0 5px 15px rgba(0,0,0,0.1);
+text-align:center;
 }
 </style>
 </head>
 
 <body>
 
-<!-- AUTH -->
-<div id="authBox" class="container mt-5" style="max-width:400px;">
-<h3 class="text-center">تسجيل / دخول</h3>
+<!-- ================= LOGIN ================= -->
+<div id="authBox" class="auth-card">
+<h2 style="text-align:center;">Mahmoud Technology</h2>
 
-<input id="email" class="form-control mb-2" placeholder="Email">
-<input id="password" class="form-control mb-2" placeholder="Password">
+<input id="email" placeholder="Email">
+<input id="password" type="password" placeholder="Password">
 
-<button class="btn btn-primary w-100 mb-2" onclick="signUp()">إنشاء حساب</button>
-<button class="btn btn-success w-100" onclick="login()">تسجيل دخول</button>
+<button class="btn-login" onclick="login()">تسجيل دخول</button>
+<button class="btn-signup" onclick="signUp()">إنشاء حساب</button>
 </div>
 
-<!-- APP -->
+<!-- ================= APP ================= -->
 <div id="appBox">
 
-<div class="hero">
-<h1>Mahmoud Technology</h1>
-<p>منصة تعليمية</p>
-<button class="btn btn-dark" onclick="logout()">تسجيل خروج</button>
+<div class="header">
+<h2>👋 Welcome</h2>
+<button onclick="logout()" style="background:red;color:#fff;padding:10px 20px;border:none;border-radius:10px;">
+تسجيل خروج
+</button>
 </div>
 
-<div class="container mt-4">
-<h3>📚 الكورسات</h3>
-
-<div class="course">أساسيات البرمجة</div>
-<div class="course">رياضيات</div>
-
-</div>
+<div class="grid">
+<div class="card">📚 البرمجة</div>
+<div class="card">🧮 الرياضيات</div>
+<div class="card">💻 الحاسوب</div>
+<div class="card">🌐 الإنجليزية</div>
 </div>
 
-<!-- FIREBASE (FIXED) -->
+</div>
+
+<!-- ================= FIREBASE ================= -->
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut }
@@ -78,41 +136,32 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 
-// ================= SIGN UP =================
+// SIGN UP
 window.signUp = function(){
-const email = document.getElementById("email").value;
-const password = document.getElementById("password").value;
+let email = document.getElementById("email").value;
+let password = document.getElementById("password").value;
 
-createUserWithEmailAndPassword(auth, email, password)
-.then(()=>{
-alert("تم إنشاء الحساب ✅");
-})
-.catch(err=>{
-alert(err.message);
-});
+createUserWithEmailAndPassword(auth,email,password)
+.then(()=>alert("تم إنشاء الحساب ✅"))
+.catch(e=>alert(e.message));
 }
 
-// ================= LOGIN =================
+// LOGIN
 window.login = function(){
-const email = document.getElementById("email").value;
-const password = document.getElementById("password").value;
+let email = document.getElementById("email").value;
+let password = document.getElementById("password").value;
 
-signInWithEmailAndPassword(auth, email, password)
+signInWithEmailAndPassword(auth,email,password)
 .then(()=>{
-alert("تم تسجيل الدخول ✅");
 document.getElementById("authBox").style.display="none";
 document.getElementById("appBox").style.display="block";
 })
-.catch(err=>{
-alert(err.message);
-});
+.catch(e=>alert(e.message));
 }
 
-// ================= LOGOUT =================
+// LOGOUT
 window.logout = function(){
-signOut(auth).then(()=>{
-location.reload();
-});
+signOut(auth).then(()=>location.reload());
 }
 </script>
 
