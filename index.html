@@ -2,80 +2,29 @@
 <html lang="ar">
 <head>
 <meta charset="UTF-8">
-<title>Instagram Clone</title>
+<title>Instagram Pro</title>
 
 <style>
-body {
-  margin: 0;
-  font-family: Arial;
-  background: #0f172a;
-  color: white;
-}
-
-.navbar {
-  background: #020617;
-  padding: 15px;
-  text-align: center;
-  font-size: 20px;
-  position: sticky;
-  top: 0;
-}
-
-.container {
-  max-width: 500px;
-  margin: auto;
-  padding: 15px;
-}
-
-input, button {
-  width: 100%;
-  margin: 5px 0;
-  padding: 10px;
-  border-radius: 8px;
-  border: none;
-}
-
-button {
-  background: #3b82f6;
-  color: white;
-  cursor: pointer;
-}
-
-.post {
-  background: #020617;
-  padding: 10px;
-  margin-top: 10px;
-  border-radius: 10px;
-}
-
-.post-header {
-  display: flex;
-  justify-content: space-between;
-  font-size: 12px;
-  color: #94a3b8;
-}
-
-a {
-  color: #3b82f6;
-  text-decoration: none;
-}
+body{margin:0;font-family:Arial;background:#0f172a;color:white}
+.navbar{padding:15px;background:#020617;text-align:center;position:sticky;top:0}
+.container{max-width:500px;margin:auto;padding:15px}
+input,button{width:100%;padding:10px;margin:5px 0;border:none;border-radius:8px}
+button{background:#3b82f6;color:white}
+.post{background:#020617;margin-top:10px;padding:10px;border-radius:10px}
+.small{font-size:12px;color:#94a3b8}
+a{color:#3b82f6;text-decoration:none}
 </style>
 </head>
 
 <body>
 
-<div class="navbar">🔥 Instagram Clone</div>
+<div class="navbar">🔥 Instagram Pro</div>
 
 <div class="container">
 
-<h3>إنشاء حساب</h3>
-<input id="regEmail" placeholder="Email">
-<input id="regPass" type="password" placeholder="Password">
-<button onclick="register()">Register</button>
-
-<h3>تسجيل دخول</h3>
-<input id="logEmail" placeholder="Email">
-<input id="logPass" type="password">
+<h3>Login</h3>
+<input id="email">
+<input id="pass" type="password">
 <button onclick="login()">Login</button>
 
 <button onclick="logout()">Logout</button>
@@ -84,11 +33,11 @@ a {
 
 <hr>
 
-<h3>إنشاء بوست</h3>
-<input id="postInput" placeholder="اكتب بوست...">
-<button onclick="addPost()">نشر</button>
+<h3>Create Post</h3>
+<input id="postText">
+<button onclick="addPost()">Post</button>
 
-<div id="postsList"></div>
+<div id="feed"></div>
 
 </div>
 
@@ -97,7 +46,6 @@ a {
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js";
 import {
 getAuth,
-createUserWithEmailAndPassword,
 signInWithEmailAndPassword,
 signOut,
 onAuthStateChanged
@@ -108,118 +56,111 @@ getFirestore,
 collection,
 addDoc,
 getDocs,
+doc,
+updateDoc,
+arrayUnion,
+arrayRemove,
 query,
 orderBy
 } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js";
 
-/* ================= Firebase ================= */
-
 const firebaseConfig = {
-apiKey: "AIzaSyBsvF9DneR5H0JbOW4HX_JjVWaajAUgk",
-authDomain: "website-8833c.firebaseapp.com",
-projectId: "website-8833c"
+apiKey:"YOUR_KEY",
+authDomain:"YOUR_DOMAIN",
+projectId:"YOUR_PROJECT"
 };
 
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 
-/* ================= Register ================= */
-
-window.register = async function () {
-const email = document.getElementById("regEmail").value;
-const pass = document.getElementById("regPass").value;
-
-try {
-await createUserWithEmailAndPassword(auth, email, pass);
-alert("تم إنشاء الحساب");
-} catch (e) {
-alert(e.message);
-}
+/* Login */
+window.login = async ()=>{
+await signInWithEmailAndPassword(auth,email.value,pass.value);
 };
 
-/* ================= Login ================= */
+/* Logout */
+window.logout = ()=>signOut(auth);
 
-window.login = async function () {
-const email = document.getElementById("logEmail").value;
-const pass = document.getElementById("logPass").value;
+/* Auth */
+onAuthStateChanged(auth,(user)=>{
+status.innerHTML = user
+? `✅ ${user.email} <br><a href="profile.html?uid=${user.uid}">Profile</a>`
+: "❌ not logged in";
 
-try {
-await signInWithEmailAndPassword(auth, email, pass);
-alert("تم تسجيل الدخول");
-} catch (e) {
-alert(e.message);
-}
-};
-
-/* ================= Logout ================= */
-
-window.logout = async function () {
-await signOut(auth);
-};
-
-/* ================= Auth State ================= */
-
-onAuthStateChanged(auth, (user) => {
-const status = document.getElementById("status");
-
-if (user) {
-status.innerHTML = `
-✅ Logged in: ${user.email} 
-<br>
-<a href="profile.html?uid=${user.uid}">👤 My Profile</a>
-`;
-loadPosts();
-} else {
-status.innerText = "❌ Not logged in";
-}
+loadFeed();
 });
 
-/* ================= Add Post ================= */
+/* Post */
+window.addPost = async ()=>{
+const u = auth.currentUser;
+if(!u) return alert("login first");
 
-window.addPost = async function () {
-const user = auth.currentUser;
-const text = document.getElementById("postInput").value;
-
-if (!user) {
-alert("سجل دخول أولاً");
-return;
-}
-
-await addDoc(collection(db, "posts"), {
-userId: user.uid,
-email: user.email,
-content: text,
-createdAt: Date.now()
+await addDoc(collection(db,"posts"),{
+userId:u.uid,
+email:u.email,
+content:postText.value,
+likes:[],
+createdAt:Date.now()
 });
 
-document.getElementById("postInput").value = "";
-loadPosts();
+postText.value="";
+loadFeed();
 };
 
-/* ================= Load Feed ================= */
+/* Feed */
+async function loadFeed(){
 
-async function loadPosts() {
-
-const q = query(collection(db, "posts"), orderBy("createdAt", "desc"));
+const q = query(collection(db,"posts"),orderBy("createdAt","desc"));
 const snap = await getDocs(q);
 
-const list = document.getElementById("postsList");
-list.innerHTML = "";
+feed.innerHTML="";
 
-snap.forEach(doc => {
-const d = doc.data();
+snap.forEach(d=>{
+const p=d.data();
 
-list.innerHTML += `
+feed.innerHTML += `
 <div class="post">
-  <div class="post-header">
-    <a href="profile.html?uid=${d.userId}">👤 ${d.email}</a>
-  </div>
-  <div>${d.content}</div>
+<div class="small">
+<a href="profile.html?uid=${p.userId}">${p.email}</a>
+</div>
+
+<div>${p.content}</div>
+
+<button onclick="like('${d.id}')">❤️ ${p.likes?.length||0}</button>
+<button onclick="commentPrompt('${d.id}')">💬 Comment</button>
 </div>
 `;
 });
 }
+
+/* Like */
+window.like = async (id)=>{
+const u=auth.currentUser;
+const ref=doc(db,"posts",id);
+
+await updateDoc(ref,{
+likes:arrayUnion(u.uid)
+});
+
+loadFeed();
+};
+
+/* Comment */
+window.commentPrompt = async (postId)=>{
+const text = prompt("Comment:");
+
+if(!text) return;
+
+const u=auth.currentUser;
+
+await addDoc(collection(db,"comments"),{
+postId,
+userId:u.uid,
+text,
+createdAt:Date.now()
+});
+};
 
 </script>
 
