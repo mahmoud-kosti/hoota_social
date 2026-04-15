@@ -1,69 +1,119 @@
 <!DOCTYPE html>
-<html lang="ar">
+<html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<title>Firebase Fixed</title>
+<title>Mahmoud Technology</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+<style>
+body{font-family:Arial;background:#f4f6f9}
+
+.hero{
+background:linear-gradient(135deg,#0d6efd,#0a58ca);
+color:#fff;
+text-align:center;
+padding:40px;
+}
+
+#appBox{display:none;text-align:center}
+
+.course{
+background:#fff;
+margin:10px;
+padding:15px;
+border-radius:10px;
+cursor:pointer;
+}
+</style>
 </head>
 
 <body>
 
-<h2>Login Test</h2>
+<!-- AUTH -->
+<div id="authBox" class="container mt-5" style="max-width:400px;">
+<h3 class="text-center">تسجيل / دخول</h3>
 
-<input id="email" placeholder="Email">
-<input id="password" type="password" placeholder="Password">
+<input id="email" class="form-control mb-2" placeholder="Email">
+<input id="password" class="form-control mb-2" placeholder="Password">
 
-<button onclick="signUp()">Sign Up</button>
-<button onclick="login()">Login</button>
+<button class="btn btn-primary w-100 mb-2" onclick="signUp()">إنشاء حساب</button>
+<button class="btn btn-success w-100" onclick="login()">تسجيل دخول</button>
+</div>
 
-<p id="msg"></p>
+<!-- APP -->
+<div id="appBox">
 
-<!-- FIREBASE CDN (CORRECT FOR HTML) -->
+<div class="hero">
+<h1>Mahmoud Technology</h1>
+<p>منصة تعليمية</p>
+<button class="btn btn-dark" onclick="logout()">تسجيل خروج</button>
+</div>
+
+<div class="container mt-4">
+<h3>📚 الكورسات</h3>
+
+<div class="course">أساسيات البرمجة</div>
+<div class="course">رياضيات</div>
+
+</div>
+</div>
+
+<!-- FIREBASE (FIXED) -->
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword }
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut }
 from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 
-// ✅ Firebase Config (FIXED)
 const firebaseConfig = {
   apiKey: "AIzaSyBsvF9J_DneR5H0JbOW4HX_JjVWaajAUgk",
   authDomain: "website-8833c.firebaseapp.com",
   projectId: "website-8833c",
-  storageBucket: "website-8833c.appspot.com",
+  storageBucket: "website-8833c.firebasestorage.app",
   messagingSenderId: "831801957212",
   appId: "1:831801957212:web:707b3c8ac71fb67212bf99"
 };
 
-// INIT
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 
 // ================= SIGN UP =================
-window.signUp = function () {
-let email = document.getElementById("email").value;
-let pass = document.getElementById("password").value;
+window.signUp = function(){
+const email = document.getElementById("email").value;
+const password = document.getElementById("password").value;
 
-createUserWithEmailAndPassword(auth, email, pass)
-.then(() => {
-document.getElementById("msg").innerText = "تم إنشاء الحساب بنجاح";
+createUserWithEmailAndPassword(auth, email, password)
+.then(()=>{
+alert("تم إنشاء الحساب ✅");
 })
-.catch((error) => {
-document.getElementById("msg").innerText = error.message;
+.catch(err=>{
+alert(err.message);
 });
-};
+}
 
 // ================= LOGIN =================
-window.login = function () {
-let email = document.getElementById("email").value;
-let pass = document.getElementById("password").value;
+window.login = function(){
+const email = document.getElementById("email").value;
+const password = document.getElementById("password").value;
 
-signInWithEmailAndPassword(auth, email, pass)
-.then(() => {
-document.getElementById("msg").innerText = "تم تسجيل الدخول بنجاح";
+signInWithEmailAndPassword(auth, email, password)
+.then(()=>{
+alert("تم تسجيل الدخول ✅");
+document.getElementById("authBox").style.display="none";
+document.getElementById("appBox").style.display="block";
 })
-.catch((error) => {
-document.getElementById("msg").innerText = error.message;
+.catch(err=>{
+alert(err.message);
 });
-};
+}
+
+// ================= LOGOUT =================
+window.logout = function(){
+signOut(auth).then(()=>{
+location.reload();
+});
+}
 </script>
 
 </body>
