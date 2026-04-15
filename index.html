@@ -1,106 +1,54 @@
-<!DOCTYPE html>
-<html lang="ar" dir="rtl">
-<head>
-<meta charset="UTF-8">
-<title>Mahmoud Technology</title>
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut }
+from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+const firebaseConfig = {
+  apiKey: "AIzaSyBsvF9J_DneR5H0JbOW4HX_JjVWaajAUgk",
+  authDomain: "website-8833c.firebaseapp.com",
+  projectId: "website-8833c",
+  storageBucket: "website-8833c.firebasestorage.app",
+  messagingSenderId: "831801957212",
+  appId: "1:831801957212:web:707b3c8ac71fb67212bf99"
+};
 
-<style>
-body{font-family:Arial;background:#f4f6f9}
-.container{max-width:500px;margin:50px auto}
-input,button{width:100%;padding:10px;margin:5px 0}
-button{cursor:pointer}
-</style>
-</head>
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
 
-<body>
+// ================= SIGN UP =================
+window.signUp = function(){
+  let email = document.getElementById("email").value;
+  let password = document.getElementById("password").value;
 
-<div class="container" id="authBox">
-<h2>تسجيل الدخول / إنشاء حساب</h2>
-
-<input type="email" id="email" placeholder="Email">
-<input type="password" id="password" placeholder="Password">
-<input type="text" id="username" placeholder="Username">
-
-<button onclick="signUp()">إنشاء حساب</button>
-<button onclick="login()">تسجيل دخول</button>
-</div>
-
-<script>
-/* =========================
-   🔑 غير الـ KEY هنا فقط
-   ========================= */
-const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpjY3lmdHF3c3V4cG1qa3Jrd2d1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYyNjcwOTcsImV4cCI6MjA5MTg0MzA5N30.uyFgGt9ubmWrR6CAkQwTw7BUOjmROoyrGPzwB3bNHyA";
-
-/* =========================
-   🔗 Project URL (لا تغيّره إلا لو مشروع جديد)
-   ========================= */
-const SUPABASE_URL = "https://zccyftqwsuxpmjkrkwgu.supabase.co";
-
-const supabase = window.supabase.createClient(
-  SUPABASE_URL,
-  SUPABASE_ANON_KEY
-);
-
-/* =========================
-   SIGN UP
-   ========================= */
-async function signUp(){
-  const email = document.getElementById("email").value;
-  const password = document.getElementById("password").value;
-  const username = document.getElementById("username").value;
-
-  const { data, error } = await supabase.auth.signUp({
-    email,
-    password
+  createUserWithEmailAndPassword(auth, email, password)
+  .then(()=>{
+    alert("تم إنشاء الحساب ✅");
+  })
+  .catch(err=>{
+    alert(err.message);
   });
-
-  if(error){
-    alert(error.message);
-    return;
-  }
-
-  if(data.user){
-    await supabase.from("profiles").insert([
-      { id: data.user.id, username }
-    ]);
-  }
-
-  alert("تم إنشاء الحساب ✅");
 }
 
-/* =========================
-   LOGIN
-   ========================= */
-async function login(){
-  const email = document.getElementById("email").value;
-  const password = document.getElementById("password").value;
+// ================= LOGIN =================
+window.login = function(){
+  let email = document.getElementById("email").value;
+  let password = document.getElementById("password").value;
 
-  const { error } = await supabase.auth.signInWithPassword({
-    email,
-    password
-  });
-
-  if(error){
-    alert(error.message);
-    return;
-  }
-
-  document.getElementById("authBox").style.display="none";
-  alert("تم تسجيل الدخول ✅");
-}
-
-/* =========================
-   CHECK SESSION
-   ========================= */
-supabase.auth.getSession().then(({ data })=>{
-  if(data.session){
+  signInWithEmailAndPassword(auth, email, password)
+  .then(()=>{
+    alert("تم تسجيل الدخول ✅");
     document.getElementById("authBox").style.display="none";
-  }
-});
-</script>
+    document.getElementById("appBox").style.display="block";
+  })
+  .catch(err=>{
+    alert(err.message);
+  });
+}
 
-</body>
-</html>
+// ================= LOGOUT =================
+window.logout = function(){
+  signOut(auth).then(()=>{
+    location.reload();
+  });
+}
+</script>
