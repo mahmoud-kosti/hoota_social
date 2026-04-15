@@ -1,3 +1,5 @@
+دا الكود الكامل بالموقع ضيف الحاجات المفروض تتضاف ووريني الباقي خطوة خطوة 
+
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
@@ -12,106 +14,323 @@
 body{
     background:#f4f6f9;
     font-family:'Cairo',Arial;
+    transition:.3s;
 }
+
+/* ===== NAVBAR ===== */
+.navbar-brand{font-weight:700;font-size:22px}
+.nav-link{font-size:17px;font-weight:600}
+
+/* ===== IOS DARK TOGGLE ===== */
+.ios-switch{
+    width:42px;height:22px;background:#ccc;
+    border-radius:20px;position:relative;cursor:pointer;
+}
+.ios-switch::before{
+    content:"";width:18px;height:18px;background:#fff;
+    position:absolute;top:2px;left:2px;
+    border-radius:50%;transition:.3s;
+}
+body.dark .ios-switch{background:#0d6efd}
+body.dark .ios-switch::before{left:22px}
+
+/* ===== HERO ===== */
 .hero{
     background:linear-gradient(135deg,#0d6efd,#0a58ca);
-    color:#fff;
-    padding:60px 20px;
-    text-align:center;
+    color:#fff;padding:60px 20px;text-align:center;
+    border-radius:0 0 30px 30px;
+}
+.hero h1{font-size:38px;font-weight:700}
+.hero p{font-size:20px; margin-top:15px;}
+
+/* ===== STATISTICS ===== */
+.stats{
+    display:flex;justify-content:center;gap:40px;margin-top:40px;text-align:center;
+}
+.stat-box{
+    background:#fff;padding:20px 30px;border-radius:15px;
+    box-shadow:0 4px 10px rgba(0,0,0,0.05);
+}
+.stat-box h3{font-size:28px;color:#0d6efd;margin-bottom:5px}
+.stat-box p{font-size:16px;color:#555}
+
+/* ===== HOME ARTICLE ===== */
+.home-article{
+    background:#fff;padding:30px;border-radius:20px;
+    margin-top:40px;line-height:1.9;
+    border:2px solid #dee2e6;
+}
+
+/* ===== COURSES ===== */
+.course-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+    gap:25px;
+    margin-top:40px;
 }
 .course-card{
-    background:#fff;
-    padding:20px;
-    border-radius:10px;
-    margin-top:20px;
-    cursor:pointer;
+    background:#fff;border-radius:15px;overflow:hidden;
+    border:2px solid #0d6efd;cursor:pointer;
+    transition:.3s;display:flex;flex-direction:column;
 }
+.course-card:hover{transform:translateY(-5px);box-shadow:0 10px 20px rgba(0,0,0,0.1);}
+.course-card img{width:100%;height:160px;object-fit:cover}
+.course-card-body{padding:15px;flex:1;display:flex;flex-direction:column}
+.course-card h5{font-weight:700;margin-bottom:10px}
+.course-card p{font-size:14px;color:#555;flex:1}
+.course-card .btn-enter{
+    background:#0d6efd;color:#fff;text-align:center;
+    padding:10px 0;border-radius:10px;font-weight:700;
+    text-decoration:none;margin-top:10px;
+}
+
+/* ===== COURSE PAGE ===== */
 .course-page{display:none}
 .course-page.active{display:block}
-.home-article{
-    background:#fff;
-    padding:20px;
-    border-radius:10px;
-    margin-top:20px;
+.back-btn{
+    display:inline-block;margin-bottom:25px;
+    background:#ff5722;color:#fff;
+    padding:15px 35px;border-radius:30px;
+    font-size:20px;font-weight:700;cursor:pointer;
+}
+
+/* ===== LESSON ===== */
+.lesson{
+    background:#fff;padding:20px;border-radius:15px;
+    border:2px solid #dee2e6;margin-bottom:20px;
+}
+video{width:100%;border-radius:10px}
+
+/* ===== DARK MODE ===== */
+body.dark{background:#121212;color:#eaeaea}
+body.dark .navbar,
+body.dark footer{background:#1f1f1f !important}
+body.dark .hero{background:linear-gradient(135deg,#222,#000)}
+body.dark .course-card,
+body.dark .lesson,
+body.dark .home-article,
+body.dark .stat-box{
+    background:#1e1e1e;border-color:#333;
+}
+body.dark p{color:#ccc}
+
+/* ===== FOOTER ===== */
+footer{
+    background:#fff;padding:30px;
+    margin-top:50px;text-align:center;
 }
 </style>
 </head>
 
 <body>
 
+<!-- NAVBAR -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+<div class="container">
+<a class="navbar-brand">Mahmoud Technology</a>
+
+<button class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#nav">
+<span class="navbar-toggler-icon"></span>
+</button>
+
+<div class="collapse navbar-collapse show" id="nav">
+<ul class="navbar-nav ms-auto align-items-center gap-3">
+<li class="nav-item"><a class="nav-link" onclick="backHome()">الرئيسية</a></li>
+<li class="nav-item"><a class="nav-link" href="#courses">الكورسات</a></li>
+<li class="nav-item"><a class="nav-link" href="https://wa.me/249900623733">تواصل معي</a></li>
+<li class="nav-item"><a class="nav-link" href="https://youtube.com/channel/UCDHo57HZnBCwPB0215yQXlA">يوتيوب</a></li>
+<li class="nav-item"><div class="ios-switch" onclick="toggleDark()"></div></li>
+</ul>
+</div>
+</div>
+</nav>
+
 <!-- HERO -->
 <div class="hero">
-<h1>Mahmoud Technology</h1>
-<p>منصة تعليمية</p>
+<h1>منصة Mahmoud Technology</h1>
+<p>منصة تعليمية جامعية وتقنية بأسلوب بسيط واحترافي</p>
+</div>
+
+<!-- STATISTICS -->
+<div class="container stats">
+  <div class="stat-box">
+    <h3>8</h3>
+    <p>كورسات</p>
+  </div>
+  <div class="stat-box">
+    <h3>1200+</h3>
+    <p>طلاب مسجلون</p>
+  </div>
+  <div class="stat-box">
+    <h3>50+</h3>
+    <p>دروس</p>
+  </div>
 </div>
 
 <!-- HOME -->
 <div class="container" id="home">
 
-<div class="course-card" onclick="openCourse('prog')">
-<h3>أساليب البرمجة</h3>
-<p>تعلم البرمجة من الصفر</p>
+<div class="home-article">
+<h3>عن المنصة</h3>
+<p>
+Mahmoud Technology منصة تعليمية تهدف إلى تبسيط العلوم التقنية
+والجامعية للطلاب بأسلوب عملي ومباشر.
+</p>
+<p>
+توفر المنصة كورسات في البرمجة، الرياضيات، الحاسوب، اللغات،
+ومقرر الثقافة الإسلامية لبناء المعرفة والقيم معًا.
+</p>
+<p>
+المحتوى مقدم بطريقة مرئية مع ملفات داعمة لتسهيل الفهم
+وإتاحة التعلم في أي وقت ومن أي جهاز.
+</p>
 </div>
 
+<h3 class="mt-5 mb-4 text-center" id="courses">📚 الكورسات</h3>
+
+<div class="course-grid">
+<script>
+const courses=[
+{id:"prog",t:"أساليب البرمجة",d:"فهم أساسيات البرمجة والتفكير المنطقي",img:"https://via.placeholder.com/300x160"},
+{id:"math",t:"الرياضيات المتقطعة",d:"المنطق، المجموعات، والعلاقات",img:"https://via.placeholder.com/300x160"},
+{id:"arabic",t:"اللغة العربية",d:"النحو والأساسيات اللغوية",img:"https://via.placeholder.com/300x160"},
+{id:"computer",t:"مهارات الحاسوب",d:"أساسيات استخدام الكمبيوتر",img:"https://via.placeholder.com/300x160"},
+{id:"comm",t:"مهارات الاتصال",d:"بناء تواصل فعال وواثق",img:"https://via.placeholder.com/300x160"},
+{id:"calc",t:"الحسبان",d:"Limits والتفاضل",img:"https://via.placeholder.com/300x160"},
+{id:"english",t:"اللغة الإنجليزية",d:"الأساسيات والمحادثة",img:"https://via.placeholder.com/300x160"},
+{id:"islamic",t:"الثقافة الإسلامية",d:"القيم والمفاهيم الإسلامية",img:"https://via.placeholder.com/300x160"},
+];
+
+document.write(courses.map(c=>`
+<div class="course-card" onclick="openCourse('${c.id}')">
+<img src="${c.img}" alt="${c.t}">
+<div class="course-card-body">
+<h5>${c.t}</h5>
+<p>${c.d}</p>
+<a class="btn-enter">الدخول للكورس</a>
+</div>
+</div>
+`).join(""));
+</script>
+</div>
 </div>
 
-<!-- COURSE -->
+<!-- COURSE PAGES -->
 <div class="container mt-5 course-page" id="prog">
-
-<h2>أساليب البرمجة</h2>
-
-<div class="home-article mt-3">
-<h4>📌 تسجيل في الكورس</h4>
-
-<input id="studentName" class="form-control" placeholder="اكتب اسمك">
-<br>
-
-<button class="btn btn-primary"
-onclick="registerStudent(
-document.getElementById('studentName').value,
-'prog'
-)">
-تسجيل
-</button>
-
-</div>
+  <div class="back-btn" onclick="backHome()">⬅ العودة للكورسات</div>
+  <h2 class="mt-3">أساليب البرمجة</h2>
+  <div class="home-article mt-3">
+    <h4>لمحة عن الكورس</h4>
+    <p>تعلم أساسيات البرمجة، التفكير المنطقي، وإنشاء البرامج البسيطة خطوة بخطوة.</p>
+  </div>
+  <div class="lesson mt-4">
+    <h5>الدرس الأول: مدخل إلى البرمجة</h5>
+    <video controls src="videos/prog1.mp4"></video>
+    <p>شرح أساسيات البرمجة وأهمية تعلمها.</p>
+  </div>
 </div>
 
-<!-- SUPABASE -->
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+<div class="container mt-5 course-page" id="math">
+  <div class="back-btn" onclick="backHome()">⬅ العودة للكورسات</div>
+  <h2 class="mt-3">الرياضيات المتقطعة</h2>
+  <div class="home-article mt-3">
+    <h4>لمحة عن الكورس</h4>
+    <p>يتناول المنطق، المجموعات، والعلاقات بطريقة عملية لتسهيل الفهم.</p>
+  </div>
+</div>
+
+<div class="container mt-5 course-page" id="arabic">
+  <div class="back-btn" onclick="backHome()">⬅ العودة للكورسات</div>
+  <h2 class="mt-3">اللغة العربية</h2>
+  <div class="home-article mt-3">
+    <h4>لمحة عن الكورس</h4>
+    <p>أساسيات النحو واللغة العربية بطريقة مبسطة وسهلة الفهم.</p>
+  </div>
+</div>
+
+<div class="container mt-5 course-page" id="computer">
+  <div class="back-btn" onclick="backHome()">⬅ العودة للكورسات</div>
+  <h2 class="mt-3">مهارات الحاسوب</h2>
+  <div class="home-article mt-3">
+    <h4>لمحة عن الكورس</h4>
+    <p>أساسيات استخدام الحاسوب والبرامج المهمة للعمل والدراسة.</p>
+  </div>
+</div>
+
+<div class="container mt-5 course-page" id="comm">
+  <div class="back-btn" onclick="backHome()">⬅ العودة للكورسات</div>
+  <h2 class="mt-3">مهارات الاتصال</h2>
+  <div class="home-article mt-3">
+    <h4>لمحة عن الكورس</h4>
+    <p>تعلم بناء تواصل فعال وواثق في بيئة العمل والحياة اليومية.</p>
+  </div>
+</div>
+
+<div class="container mt-5 course-page" id="calc">
+  <div class="back-btn" onclick="backHome()">⬅ العودة للكورسات</div>
+  <h2 class="mt-3">الحسبان</h2>
+  <div class="home-article mt-3">
+    <h4>لمحة عن الكورس</h4>
+    <p>تعلم Limits، التفاضل والتكامل بطريقة مبسطة.</p>
+  </div>
+</div> <a href="pdfs/lesson1.pdf" target="_blank">
+📄 فتح ملف الدرس
+</a>
+
+<div class="container mt-5 course-page" id="english">
+  <div class="back-btn" onclick="backHome()">⬅ العودة للكورسات</div>
+  <h2 class="mt-3">اللغة الإنجليزية</h2>
+  <div class="home-article mt-3">
+    <h4>لمحة عن الكورس</h4>
+    <p>الأساسيات، المحادثة، والقواعد بطريقة سهلة ومبسطة.</p>
+  </div>
+</div>
+
+<div class="container mt-5 course-page" id="islamic">
+  <div class="back-btn" onclick="backHome()">⬅ العودة للكورسات</div>
+  <h2 class="mt-3">الثقافة الإسلامية</h2>
+  <div class="home-article mt-3">
+    <h4>لمحة عن الكورس</h4>
+    <p>القيم والمفاهيم الإسلامية وأهميتها في الحياة اليومية بطريقة عملية.</p>
+  </div>
+</div>
+
+<footer>
+<p>© 2025 Mahmoud Technology</p>
+</footer>
 
 <script>
-const supabaseUrl = "https://xblelhmjgtbobuuntyhq.supabase.co";
-const supabaseKey = "sb_publishable_SPTU7w-HXUQi3pD09uc7fA_bo2_hGxg";
+const ACCESS_PASSWORD="2025";
 
-const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
-
-// ✅ تسجيل الطالب (نسخة واحدة فقط بدون تكرار)
-function registerStudent(name, course){
-
-  if(!name){
-    alert("اكتب اسمك");
+function openCourse(id){
+  let p=prompt("🔐 أدخل كلمة المرور للدخول إلى الكورس:");
+  if(p!==ACCESS_PASSWORD){
+    alert("كلمة المرور غير صحيحة");
     return;
   }
-
-  supabase.from("students").insert([
-    { name: name, course: course }
-  ])
-  .then(() => {
-    alert("تم التسجيل ✅");
-  })
-  .catch((err) => {
-    console.log(err);
-    alert("في مشكلة ❌");
-  });
+  document.getElementById("home").style.display="none";
+  document.querySelectorAll(".course-page").forEach(e=>e.classList.remove("active"));
+  document.getElementById(id).classList.add("active");
+  window.scrollTo(0,0);
 }
 
-// فتح الكورس بدون كلمة سر ❌
-function openCourse(id){
-  document.getElementById("home").style.display="none";
-  document.getElementById(id).classList.add("active");
+function backHome(){
+  document.getElementById("home").style.display="block";
+  document.querySelectorAll(".course-page").forEach(e=>e.classList.remove("active"));
+  window.scrollTo(0,0);
+}
+
+function toggleDark(){
+  document.body.classList.toggle("dark");
+  localStorage.setItem("theme",
+    document.body.classList.contains("dark")?"dark":"light");
+}
+
+if(localStorage.getItem("theme")==="dark"){
+  document.body.classList.add("dark");
 }
 </script>
 
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
