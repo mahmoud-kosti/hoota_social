@@ -2,29 +2,33 @@
 <html lang="ar">
 <head>
 <meta charset="UTF-8">
-<title>Instagram Pro</title>
+<title>Instagram Fix</title>
 
 <style>
 body{margin:0;font-family:Arial;background:#0f172a;color:white}
-.navbar{padding:15px;background:#020617;text-align:center;position:sticky;top:0}
+.navbar{padding:15px;background:#020617;text-align:center}
 .container{max-width:500px;margin:auto;padding:15px}
 input,button{width:100%;padding:10px;margin:5px 0;border:none;border-radius:8px}
 button{background:#3b82f6;color:white}
 .post{background:#020617;margin-top:10px;padding:10px;border-radius:10px}
-.small{font-size:12px;color:#94a3b8}
 a{color:#3b82f6;text-decoration:none}
 </style>
 </head>
 
 <body>
 
-<div class="navbar">🔥 Instagram Pro</div>
+<div class="navbar">🔥 Instagram Fixed</div>
 
 <div class="container">
 
+<h3>Register</h3>
+<input id="regEmail" placeholder="Email">
+<input id="regPass" type="password" placeholder="Password">
+<button onclick="register()">Create Account</button>
+
 <h3>Login</h3>
-<input id="email">
-<input id="pass" type="password">
+<input id="logEmail" placeholder="Email">
+<input id="logPass" type="password">
 <button onclick="login()">Login</button>
 
 <button onclick="logout()">Logout</button>
@@ -33,7 +37,7 @@ a{color:#3b82f6;text-decoration:none}
 
 <hr>
 
-<h3>Create Post</h3>
+<h3>Post</h3>
 <input id="postText">
 <button onclick="addPost()">Post</button>
 
@@ -44,8 +48,10 @@ a{color:#3b82f6;text-decoration:none}
 <script type="module">
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js";
+
 import {
 getAuth,
+createUserWithEmailAndPassword,
 signInWithEmailAndPassword,
 signOut,
 onAuthStateChanged
@@ -56,33 +62,44 @@ getFirestore,
 collection,
 addDoc,
 getDocs,
-doc,
-updateDoc,
-arrayUnion,
-arrayRemove,
 query,
 orderBy
 } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js";
 
 const firebaseConfig = {
-apiKey:"YOUR_KEY",
-authDomain:"YOUR_DOMAIN",
-projectId:"YOUR_PROJECT"
+apiKey: "YOUR_KEY",
+authDomain: "YOUR_DOMAIN",
+projectId: "YOUR_PROJECT"
 };
 
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 
-/* Login */
-window.login = async ()=>{
-await signInWithEmailAndPassword(auth,email.value,pass.value);
+/* ================= REGISTER ================= */
+window.register = async function () {
+try {
+await createUserWithEmailAndPassword(auth, regEmail.value, regPass.value);
+alert("Account Created");
+} catch (e) {
+alert(e.message);
+}
 };
 
-/* Logout */
+/* ================= LOGIN ================= */
+window.login = async function () {
+try {
+await signInWithEmailAndPassword(auth, logEmail.value, logPass.value);
+alert("Logged in");
+} catch (e) {
+alert(e.message);
+}
+};
+
+/* ================= LOGOUT ================= */
 window.logout = ()=>signOut(auth);
 
-/* Auth */
+/* ================= AUTH STATE ================= */
 onAuthStateChanged(auth,(user)=>{
 status.innerHTML = user
 ? `✅ ${user.email} <br><a href="profile.html?uid=${user.uid}">Profile</a>`
@@ -91,24 +108,24 @@ status.innerHTML = user
 loadFeed();
 });
 
-/* Post */
-window.addPost = async ()=>{
-const u = auth.currentUser;
-if(!u) return alert("login first");
+/* ================= POST ================= */
+window.addPost = async function () {
+const user = auth.currentUser;
+if(!user) return alert("login first");
 
 await addDoc(collection(db,"posts"),{
-userId:u.uid,
-email:u.email,
+userId:user.uid,
+email:user.email,
 content:postText.value,
-likes:[],
-createdAt:Date.now()
+createdAt:Date.now(),
+likes:[]
 });
 
 postText.value="";
 loadFeed();
 };
 
-/* Feed */
+/* ================= FEED ================= */
 async function loadFeed(){
 
 const q = query(collection(db,"posts"),orderBy("createdAt","desc"));
@@ -121,46 +138,12 @@ const p=d.data();
 
 feed.innerHTML += `
 <div class="post">
-<div class="small">
 <a href="profile.html?uid=${p.userId}">${p.email}</a>
-</div>
-
-<div>${p.content}</div>
-
-<button onclick="like('${d.id}')">❤️ ${p.likes?.length||0}</button>
-<button onclick="commentPrompt('${d.id}')">💬 Comment</button>
+<p>${p.content}</p>
 </div>
 `;
 });
 }
-
-/* Like */
-window.like = async (id)=>{
-const u=auth.currentUser;
-const ref=doc(db,"posts",id);
-
-await updateDoc(ref,{
-likes:arrayUnion(u.uid)
-});
-
-loadFeed();
-};
-
-/* Comment */
-window.commentPrompt = async (postId)=>{
-const text = prompt("Comment:");
-
-if(!text) return;
-
-const u=auth.currentUser;
-
-await addDoc(collection(db,"comments"),{
-postId,
-userId:u.uid,
-text,
-createdAt:Date.now()
-});
-};
 
 </script>
 
