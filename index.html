@@ -2,24 +2,23 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<title>Mahmoud Academy</title>
+<title>Mahmoud Academy Pro</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
 <style>
 body{
 margin:0;
 font-family:Arial;
-transition:0.4s;
 background:#f4f6f9;
+transition:0.3s;
 }
 
-/* DARK MODE */
 body.dark{
 background:#0f172a;
 color:#fff;
 }
 
-/* CENTER CARD */
+/* ================= LOGIN ================= */
 .container{
 width:360px;
 position:absolute;
@@ -28,20 +27,18 @@ left:50%;
 transform:translate(-50%,-50%);
 }
 
-/* CARD */
 .card{
 background:#fff;
 padding:20px;
-border-radius:20px;
+border-radius:18px;
 box-shadow:0 10px 25px rgba(0,0,0,0.1);
-transition:0.4s;
+transition:0.3s;
 }
 
 body.dark .card{
 background:#1e293b;
 }
 
-/* INPUT */
 input{
 width:100%;
 padding:12px;
@@ -51,7 +48,6 @@ border:1px solid #ddd;
 outline:none;
 }
 
-/* BUTTON */
 button{
 width:100%;
 padding:12px;
@@ -65,91 +61,148 @@ margin-top:8px;
 .login{background:#00b894;color:#fff}
 .signup{background:#0984e3;color:#fff}
 
-/* SWITCH */
-.switch{
-text-align:center;
-margin-top:10px;
-font-size:13px;
+/* ================= DASHBOARD ================= */
+#app{
+display:none;
+padding:20px;
+}
+
+.header{
+display:flex;
+justify-content:space-between;
+align-items:center;
+background:#fff;
+padding:15px;
+border-radius:15px;
+box-shadow:0 5px 15px rgba(0,0,0,0.05);
+}
+
+body.dark .header{
+background:#1e293b;
+}
+
+.grid{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+gap:15px;
+margin-top:20px;
+}
+
+/* COURSE CARD */
+.course{
+background:#fff;
+padding:15px;
+border-radius:15px;
 cursor:pointer;
-color:#555;
+transition:0.3s;
+box-shadow:0 5px 10px rgba(0,0,0,0.05);
 }
 
-body.dark .switch{
-color:#ccc;
+.course:hover{
+transform:translateY(-5px);
 }
 
-/* TOP BAR */
-.topbar{
-position:fixed;
-top:10px;
-right:10px;
+body.dark .course{
+background:#1e293b;
 }
 
-.toggle{
-padding:8px 12px;
+/* LESSON PAGE */
+#coursePage{
+display:none;
+padding:20px;
+}
+
+.lesson{
+background:#fff;
+padding:15px;
+border-radius:12px;
+margin-top:10px;
+box-shadow:0 5px 10px rgba(0,0,0,0.05);
+}
+
+body.dark .lesson{
+background:#1e293b;
+}
+
+.back{
+background:#ff4757;
+color:#fff;
+padding:10px 15px;
 border:none;
 border-radius:10px;
 cursor:pointer;
-background:#111;
-color:#fff;
+margin-bottom:15px;
 }
 </style>
 </head>
 
 <body>
 
-<!-- DARK TOGGLE -->
-<div class="topbar">
-<button class="toggle" onclick="toggleTheme()">🌙 وضع داكن</button>
-</div>
-
-<!-- LOGIN CARD -->
-<div class="container" id="loginBox">
+<!-- ================= LOGIN ================= -->
+<div class="container" id="authBox">
 <div class="card">
 
-<h2 style="text-align:center;">تسجيل دخول</h2>
+<h2 style="text-align:center;">📚 Mahmoud Academy</h2>
 
-<input id="loginUser" placeholder="اسم المستخدم">
-<input id="loginPass" type="password" placeholder="كلمة المرور">
+<input id="email" placeholder="Email">
+<input id="password" type="password" placeholder="كلمة المرور">
 
-<button class="login" onclick="login()">دخول</button>
+<button class="login" onclick="login()">🔑 تسجيل دخول</button>
+<button class="signup" onclick="signup()">🆕 إنشاء حساب</button>
 
-<div class="switch" onclick="showSignup()">
-ليس لديك حساب؟ إنشاء حساب
+</div>
+</div>
+
+<!-- ================= DASHBOARD ================= -->
+<div id="app">
+
+<div class="header">
+<h3 id="welcome">👋 مرحباً</h3>
+<div>
+<button onclick="toggleTheme()" style="padding:8px;border:none;border-radius:8px;">🌙</button>
+<button onclick="logout()" style="background:red;color:#fff;padding:8px;border:none;border-radius:8px;">خروج</button>
+</div>
+</div>
+
+<div class="grid">
+
+<div class="course" onclick="openCourse('prog')">
+💻 البرمجة
+</div>
+
+<div class="course" onclick="openCourse('math')">
+🧮 الرياضيات
+</div>
+
+<div class="course" onclick="openCourse('english')">
+🌍 الإنجليزية
+</div>
+
+<div class="course" onclick="openCourse('computer')">
+🖥 الحاسوب
 </div>
 
 </div>
 </div>
 
-<!-- SIGNUP CARD -->
-<div class="container" id="signupBox" style="display:none;">
-<div class="card">
+<!-- ================= COURSE PAGE ================= -->
+<div id="coursePage">
 
-<h2 style="text-align:center;">إنشاء حساب</h2>
+<button class="back" onclick="back()">⬅ رجوع للكورسات</button>
 
-<input id="signupUser" placeholder="اسم المستخدم">
-<input id="signupEmail" placeholder="البريد الإلكتروني">
-<input id="signupPass" type="password" placeholder="كلمة المرور">
+<h2 id="courseTitle"></h2>
 
-<button class="signup" onclick="signup()">إنشاء الحساب</button>
+<div id="lessons"></div>
 
-<div class="switch" onclick="showLogin()">
-لديك حساب؟ تسجيل دخول
-</div>
-
-</div>
 </div>
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword }
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut }
 from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 
-import { getFirestore, setDoc, doc, getDoc }
-from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
-
 const firebaseConfig = {
-  apiKey: "AIzaSyBsvF9J_DneR5H0JbOW4HX_JjVWaajAUgk",
+  apiKey: "AIzaSyBsvF9DneR5H0JbOW4HX_JjVWaajAUgk",
   authDomain: "website-8833c.firebaseapp.com",
   projectId: "website-8833c",
   storageBucket: "website-8833c.firebasestorage.app",
@@ -159,75 +212,101 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
-const db = getFirestore(app);
-
-/* ================= SIGNUP ================= */
-window.signup = async function(){
-
-let user = document.getElementById("signupUser").value;
-let email = document.getElementById("signupEmail").value;
-let pass = document.getElementById("signupPass").value;
-
-try{
-let cred = await createUserWithEmailAndPassword(auth,email,pass);
-
-await setDoc(doc(db,"users",cred.user.uid),{
-username:user,
-email:email
-});
-
-alert("تم إنشاء الحساب بنجاح ✅");
-showLogin();
-
-}catch(e){
-alert(errorMessage(e.code));
-}
-}
 
 /* ================= LOGIN ================= */
 window.login = async function(){
-
-let user = document.getElementById("loginUser").value;
-let pass = document.getElementById("loginPass").value;
+let email = document.getElementById("email").value;
+let pass = document.getElementById("password").value;
 
 try{
-let users = await signInWithEmailAndPassword(auth,user,pass);
+await signInWithEmailAndPassword(auth,email,pass);
 
-let data = await getDoc(doc(db,"users",users.user.uid));
-
-if(data.exists()){
-alert("تم تسجيل الدخول بنجاح ✅");
-}else{
-alert("مستخدم غير موجود");
-}
+document.getElementById("authBox").style.display="none";
+document.getElementById("app").style.display="block";
 
 }catch(e){
-alert(errorMessage(e.code));
+alert("خطأ في تسجيل الدخول");
 }
 }
 
-/* ================= ERROR HANDLER ================= */
-function errorMessage(code){
-if(code==="auth/invalid-email") return "بريد إلكتروني غير صحيح";
-if(code==="auth/user-not-found") return "المستخدم غير موجود";
-if(code==="auth/wrong-password") return "كلمة المرور خطأ";
-if(code==="auth/weak-password") return "كلمة المرور ضعيفة (6 أحرف على الأقل)";
-return "حدث خطأ غير متوقع";
+/* ================= SIGNUP ================= */
+window.signup = async function(){
+let email = document.getElementById("email").value;
+let pass = document.getElementById("password").value;
+
+try{
+await createUserWithEmailAndPassword(auth,email,pass);
+alert("تم إنشاء الحساب ✅");
+}catch(e){
+alert("خطأ في إنشاء الحساب");
+}
 }
 
-/* ================= UI ================= */
-window.showSignup = function(){
-document.getElementById("loginBox").style.display="none";
-document.getElementById("signupBox").style.display="block";
+/* ================= LOGOUT ================= */
+window.logout = function(){
+signOut(auth).then(()=>location.reload());
 }
 
-window.showLogin = function(){
-document.getElementById("signupBox").style.display="none";
-document.getElementById("loginBox").style.display="block";
-}
-
+/* ================= THEME ================= */
 window.toggleTheme = function(){
 document.body.classList.toggle("dark");
+}
+
+/* ================= COURSES ================= */
+const courses = {
+prog:{
+title:"💻 البرمجة",
+lessons:[
+"🔹 مقدمة في البرمجة",
+"🔹 المتغيرات",
+"🔹 الجمل الشرطية",
+"🔹 الحلقات"
+]
+},
+math:{
+title:"🧮 الرياضيات",
+lessons:[
+"🔹 الجبر",
+"🔹 المعادلات",
+"🔹 التفاضل",
+"🔹 التكامل"
+]
+},
+english:{
+title:"🌍 الإنجليزية",
+lessons:[
+"🔹 أساسيات القواعد",
+"🔹 المحادثة",
+"🔹 الكلمات المهمة"
+]
+},
+computer:{
+title:"🖥 الحاسوب",
+lessons:[
+"🔹 مكونات الكمبيوتر",
+"🔹 نظام التشغيل",
+"🔹 الإنترنت"
+]
+}
+};
+
+window.openCourse = function(id){
+document.getElementById("app").style.display="none";
+document.getElementById("coursePage").style.display="block";
+
+document.getElementById("courseTitle").innerText = courses[id].title;
+
+let html="";
+courses[id].lessons.forEach(l=>{
+html += `<div class="lesson">📌 ${l}</div>`;
+});
+
+document.getElementById("lessons").innerHTML = html;
+}
+
+window.back = function(){
+document.getElementById("coursePage").style.display="none";
+document.getElementById("app").style.display="block";
 }
 </script>
 
