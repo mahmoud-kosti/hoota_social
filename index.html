@@ -89,35 +89,19 @@ button {
 
 </div>
 
+<!-- 🔥 Supabase -->
 <script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js";
-import {
-  getAuth,
-  createUserWithEmailAndPassword,
-  signInWithEmailAndPassword,
-  signOut,
-  onAuthStateChanged
-} from "https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js";
+import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
 
-import {
-  getFirestore,
-  collection,
-  addDoc,
-  getDocs
-} from "https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js";
+// 🔑 بياناتك
+const supabaseUrl = "https://ymepvanoqgvntcuacnhm.supabase.co";
+const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InltZXB2YW5vcWd2bnRjdWFjbmhtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYyNzE2MDMsImV4cCI6MjA5MTg0NzYwM30.T8vXyv_DsSGoas8kLpNMI3ULEA8keB2pTseHnGUlZyw";
 
-const firebaseConfig = {
-  apiKey: "AIzaSyBsvF9J_DneR5H0JbOW4HX_JjVWaajAUgk",
-  authDomain: "website-8833c.firebaseapp.com",
-  projectId: "website-8833c"
-};
+const supabase = createClient(supabaseUrl, supabaseKey);
 
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const db = getFirestore(app);
-
-// حماية الصفحة
-onAuthStateChanged(auth, (user) => {
+// حالة المستخدم
+async function checkUser() {
+  const { data: { user } } = await supabase.auth.getUser();
   const status = document.getElementById("status");
 
   if (user) {
@@ -126,19 +110,22 @@ onAuthStateChanged(auth, (user) => {
   } else {
     status.innerText = "❌ غير مسجل دخول";
   }
-});
+}
+
+checkUser();
 
 // إنشاء حساب
 window.register = async function () {
   const email = document.getElementById("regEmail").value;
   const pass = document.getElementById("regPass").value;
 
-  try {
-    await createUserWithEmailAndPassword(auth, email, pass);
-    alert("تم إنشاء الحساب");
-  } catch (e) {
-    alert(e.message);
-  }
+  const { error } = await supabase.auth.signUp({
+    email: email,
+    password: pass
+  });
+
+  if (error) alert(error.message);
+  else alert("تم إنشاء الحساب");
 };
 
 // تسجيل دخول
@@ -146,60 +133,72 @@ window.login = async function () {
   const email = document.getElementById("logEmail").value;
   const pass = document.getElementById("logPass").value;
 
-  try {
-    await signInWithEmailAndPassword(auth, email, pass);
+  const { error } = await supabase.auth.signInWithPassword({
+    email: email,
+    password: pass
+  });
+
+  if (error) alert(error.message);
+  else {
     alert("تم تسجيل الدخول");
-  } catch (e) {
-    alert(e.message);
+    checkUser();
   }
 };
 
 // تسجيل خروج
 window.logout = async function () {
-  await signOut(auth);
+  await supabase.auth.signOut();
   alert("تم تسجيل الخروج");
+  checkUser();
 };
 
 // نشر بوست
 window.addPost = async function () {
-  const user = auth.currentUser;
   const content = document.getElementById("postInput").value;
+
+  const { data: { user } } = await supabase.auth.getUser();
 
   if (!user) {
     alert("سجل دخول أولاً");
     return;
   }
 
-  await addDoc(collection(db, "posts"), {
-    userId: user.uid,
-    email: user.email,
-    content: content,
-    createdAt: new Date()
-  });
+  const { error } = await supabase.from("posts").insert([
+    {
+      email: user.email,
+      content: content
+    }
+  ]);
 
-  document.getElementById("postInput").value = "";
-  loadPosts();
+  if (error) {
+    alert(error.message);
+  } else {
+    document.getElementById("postInput").value = "";
+    loadPosts();
+  }
 };
 
 // تحميل البوستات
 async function loadPosts() {
-  const snap = await getDocs(collection(db, "posts"));
-  const list = document.getElementById("postsList");
+  const { data } = await supabase
+    .from("posts")
+    .select("*")
+    .order("created_at", { ascending: false });
 
+  const list = document.getElementById("postsList");
   list.innerHTML = "";
 
-  snap.forEach(doc => {
-    const data = doc.data();
-
-    list.innerHTML += `
-      <div class="post">
-        <div class="email">${data.email}</div>
-        <div>${data.content}</div>
-      </div>
-    `;
-  });
+  if (data) {
+    data.forEach(post => {
+      list.innerHTML += `
+        <div class="post">
+          <div class="email">${post.email}</div>
+          <div>${post.content}</div>
+        </div>
+      `;
+    });
+  }
 }
-
 </script>
 
 </body>
