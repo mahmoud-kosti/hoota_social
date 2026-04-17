@@ -2,210 +2,185 @@
 <html lang="ar">
 <head>
 <meta charset="UTF-8">
-<title>HOota O Black</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My Social App</title>
 
 <style>
-body{
-margin:0;
-font-family:Arial;
-background:linear-gradient(135deg,#0f172a,#020617);
-color:white;
-transition:0.4s;
+body {
+  margin: 0;
+  font-family: Arial;
+  background: #0f172a;
+  color: white;
 }
 
-/* DARK MODE */
-body.light{
-background:#f1f5f9;
-color:#000;
+/* NAV */
+.navbar {
+  background: #020617;
+  padding: 15px;
+  text-align: center;
+  font-size: 20px;
+  border-bottom: 1px solid #1e293b;
 }
 
-.navbar{
-display:flex;
-justify-content:space-between;
-align-items:center;
-padding:15px 20px;
-background:#020617;
-border-bottom:1px solid #1e293b;
+/* CONTAINER */
+.container {
+  max-width: 520px;
+  margin: auto;
+  padding: 15px;
 }
 
-.title{
-font-size:26px;
-font-weight:900;
-color:#38bdf8;
-letter-spacing:2px;
+/* CARD LOGIN 3D */
+.card {
+  background: #020617;
+  padding: 20px;
+  border-radius: 15px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+  transform: perspective(800px) rotateX(2deg);
+  transition: 0.3s;
 }
 
-/* DARK BUTTON */
-.toggle{
-background:#1e293b;
-border:none;
-padding:8px 12px;
-border-radius:10px;
-color:white;
-cursor:pointer;
+.card:hover {
+  transform: perspective(800px) rotateX(0deg) scale(1.01);
 }
 
-/* MAIN WRAPPER */
-.container{
-max-width:900px;
-margin:auto;
-padding:20px;
+input, button {
+  width: 100%;
+  margin: 6px 0;
+  padding: 10px;
+  border-radius: 8px;
+  border: none;
 }
 
-/* BIG LOGIN CARD */
-.hero{
-display:flex;
-justify-content:center;
-align-items:center;
-height:85vh;
+input {
+  background: #0f172a;
+  color: white;
+  border: 1px solid #1e293b;
 }
 
-.card{
-width:420px;
-padding:30px;
-border-radius:20px;
-background:rgba(2,6,23,0.85);
-backdrop-filter: blur(10px);
-box-shadow:0 20px 50px rgba(0,0,0,0.5);
-text-align:center;
-transform:scale(1);
-transition:0.4s;
+button {
+  background: #3b82f6;
+  color: white;
+  cursor: pointer;
+  transition: 0.3s;
 }
 
-.card:hover{
-transform:scale(1.03);
-}
-
-/* BIG BRAND */
-.brand{
-font-size:34px;
-font-weight:900;
-margin-bottom:10px;
-color:#38bdf8;
-}
-
-/* INPUT */
-input{
-width:100%;
-padding:12px;
-margin:8px 0;
-border-radius:10px;
-border:none;
-background:#0f172a;
-color:white;
-}
-
-/* BUTTON */
-button{
-width:100%;
-padding:12px;
-border:none;
-border-radius:10px;
-background:#38bdf8;
-color:black;
-font-weight:bold;
-cursor:pointer;
-transition:0.3s;
-}
-
-button:hover{
-transform:scale(1.03);
+button:hover {
+  transform: scale(1.03);
 }
 
 /* SWITCH */
-.switch{
-color:#38bdf8;
-cursor:pointer;
-margin-top:10px;
+.switch {
+  color: #60a5fa;
+  cursor: pointer;
+  margin-top: 10px;
+  text-align: center;
 }
 
-/* APP */
-.app{
-display:none;
+/* POSTS */
+.post {
+  background: #020617;
+  padding: 10px;
+  margin-top: 10px;
+  border-radius: 10px;
+  border: 1px solid #1e293b;
 }
 
-.post{
-background:#0f172a;
-padding:10px;
-margin-top:10px;
-border-radius:10px;
+.email {
+  font-size: 12px;
+  color: #94a3b8;
 }
 
-.footer{
-margin-top:20px;
-text-align:center;
-font-size:13px;
-opacity:0.8;
+/* LOGOUT */
+.logout {
+  background: #ef4444;
+  margin-top: 10px;
 }
 
-.whatsapp{
-margin-top:10px;
-text-align:center;
+/* FOOTER */
+.footer {
+  margin-top: 25px;
+  text-align: center;
+  font-size: 13px;
+  opacity: 0.8;
 }
 
-.whatsapp a{
-background:#25D366;
-padding:10px 15px;
-border-radius:30px;
-color:white;
-text-decoration:none;
-display:inline-block;
+/* WHATSAPP */
+.whatsapp {
+  display: flex;
+  justify-content: center;
+  margin-top: 10px;
+}
+
+.whatsapp a {
+  background: #25D366;
+  padding: 10px 15px;
+  border-radius: 50px;
+  color: white;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: 0.3s;
+}
+
+.whatsapp a:hover {
+  transform: scale(1.05);
 }
 </style>
 </head>
 
 <body>
 
-<!-- NAV -->
 <div class="navbar">
-<div class="title">HOota O Black</div>
-<button class="toggle" onclick="toggleTheme()">🌙 الوضع</button>
+🔥  HOota O Black
 </div>
 
-<!-- LOGIN -->
-<div id="auth" class="hero">
+<div class="container">
 
-<div class="card">
+<!-- 🔐 AUTH -->
+<div id="authBox" class="card">
 
-<div class="brand">HOota O Black</div>
+  <div id="loginBox">
+    <h3>تسجيل الدخول</h3>
+    <input type="email" id="logEmail" placeholder="Email">
+    <input type="password" id="logPass" placeholder="Password">
+    <button onclick="login()">Login</button>
+    <div class="switch" onclick="toggleForm()">إنشاء حساب جديد</div>
+  </div>
 
-<div id="loginBox">
-<input id="logEmail" placeholder="Email">
-<input id="logPass" type="password" placeholder="Password">
-<button onclick="login()">تسجيل الدخول</button>
-<div class="switch" onclick="toggleForm()">إنشاء حساب جديد</div>
+  <div id="registerBox" style="display:none">
+    <h3>إنشاء حساب</h3>
+    <input type="email" id="regEmail" placeholder="Email">
+    <input type="password" id="regPass" placeholder="Password">
+    <input type="password" id="regPass2" placeholder="Confirm Password">
+    <button onclick="register()">Register</button>
+    <div class="switch" onclick="toggleForm()">رجوع لتسجيل الدخول</div>
+  </div>
+
 </div>
 
-<div id="registerBox" style="display:none">
-<input id="regEmail" placeholder="Email">
-<input id="regPass" type="password" placeholder="Password">
-<input id="regPass2" type="password" placeholder="Confirm Password">
-<button onclick="register()">إنشاء حساب</button>
-<div class="switch" onclick="toggleForm()">رجوع</div>
-</div>
+<!-- 🟢 POSTS -->
+<div id="appBox" style="display:none">
 
-</div>
-</div>
+  <h3>اكتب بوست</h3>
+  <input type="text" id="postInput" placeholder="اكتب هنا">
+  <button onclick="addPost()">نشر</button>
 
-<!-- APP -->
-<div id="app" class="app container">
+  <button class="logout" onclick="logout()">تسجيل خروج</button>
 
-<h2>📢 النشر</h2>
+  <div id="postsList"></div>
 
-<input id="postInput" placeholder="اكتب بوست...">
-<button onclick="addPost()">نشر</button>
+  <!-- WhatsApp -->
+  <div class="whatsapp">
+    <a href="https://wa.me/249900623733" target="_blank">
+      💬 تواصل واتساب
+    </a>
+  </div>
 
-<button onclick="logout()" style="background:#ef4444;margin-top:10px">تسجيل خروج</button>
+  <!-- Footer -->
+  <div class="footer">
+    جميع الحقوق محفوظة لدى HOota O Black ©
+  </div>
 
-<div id="postsList"></div>
-
-<div class="whatsapp">
-<a href="https://wa.me/249900623733" target="_blank">💬 تواصل واتساب</a>
-</div>
-
-<div class="footer">
-جميع الحقوق محفوظة لدى HOota O Black ©
 </div>
 
 </div>
@@ -214,90 +189,112 @@ display:inline-block;
 <script type="module">
 import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
 
-const supabase = createClient(
-"https://ymepvanoqgvntcuacnhm.supabase.co",
-"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
-);
+const supabaseUrl = "https://ymepvanoqgvntcuacnhm.supabase.co";
+const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InltZXB2YW5vcWd2bnRjdWFjbmhtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYyNzE2MDMsImV4cCI6MjA5MTg0NzYwM30.T8vXyv_DsSGoas8kLpNMI3ULEA8keB2pTseHnGUlZyw";
+
+const supabase = createClient(supabaseUrl, supabaseKey);
 
 /* UI */
-const auth=document.getElementById("auth");
-const app=document.getElementById("app");
-
-/* DARK MODE */
-window.toggleTheme=()=>{
-document.body.classList.toggle("light");
-}
+const authBox = document.getElementById("authBox");
+const appBox = document.getElementById("appBox");
 
 /* TOGGLE FORM */
-window.toggleForm=()=>{
-loginBox.style.display=
-loginBox.style.display==="none"?"block":"none";
-registerBox.style.display=
-registerBox.style.display==="none"?"block":"none";
+window.toggleForm = function(){
+  document.getElementById("loginBox").style.display =
+  document.getElementById("loginBox").style.display === "none" ? "block" : "none";
+
+  document.getElementById("registerBox").style.display =
+  document.getElementById("registerBox").style.display === "none" ? "block" : "none";
 }
 
 /* CHECK USER */
-async function check(){
-const { data:{user} }=await supabase.auth.getUser();
-if(user){
-auth.style.display="none";
-app.style.display="block";
-loadPosts();
-}else{
-auth.style.display="flex";
-app.style.display="none";
+async function checkUser(){
+  const { data: { user } } = await supabase.auth.getUser();
+
+  if(user){
+    authBox.style.display = "none";
+    appBox.style.display = "block";
+    loadPosts();
+  } else {
+    authBox.style.display = "block";
+    appBox.style.display = "none";
+  }
 }
-}
-check();
+checkUser();
 
 /* REGISTER */
-window.register=async()=>{
-if(regPass.value!==regPass2.value){
-alert("كلمات المرور غير متطابقة");
-return;
-}
+window.register = async function(){
+  const email = regEmail.value;
+  const pass = regPass.value;
+  const pass2 = regPass2.value;
 
-await supabase.auth.signUp({
-email:regEmail.value,
-password:regPass.value
-});
+  if(pass !== pass2){
+    alert("كلمات المرور غير متطابقة");
+    return;
+  }
+
+  const { error } = await supabase.auth.signUp({
+    email,
+    password: pass
+  });
+
+  if(error) alert(error.message);
+  else alert("تم إنشاء الحساب");
 }
 
 /* LOGIN */
-window.login=async()=>{
-await supabase.auth.signInWithPassword({
-email:logEmail.value,
-password:logPass.value
-});
-check();
+window.login = async function(){
+  const { error } = await supabase.auth.signInWithPassword({
+    email: logEmail.value,
+    password: logPass.value
+  });
+
+  if(error) alert(error.message);
+  else checkUser();
 }
 
 /* LOGOUT */
-window.logout=async()=>{
-await supabase.auth.signOut();
-check();
+window.logout = async function(){
+  await supabase.auth.signOut();
+  checkUser();
 }
 
-/* POST */
-window.addPost=async()=>{
-const { data:{user} }=await supabase.auth.getUser();
-await supabase.from("posts").insert([
-{ email:user.email, content:postInput.value }
-]);
-postInput.value="";
-loadPosts();
+/* ADD POST */
+window.addPost = async function(){
+  const content = postInput.value;
+
+  const { data: { user } } = await supabase.auth.getUser();
+
+  if(!user){
+    alert("سجل دخول أولاً");
+    return;
+  }
+
+  await supabase.from("posts").insert([
+    { email: user.email, content }
+  ]);
+
+  postInput.value = "";
+  loadPosts();
 }
 
 /* LOAD POSTS */
 async function loadPosts(){
-const { data }=await supabase.from("posts").select("*");
-postsList.innerHTML="";
-data.forEach(p=>{
-postsList.innerHTML+=`
-<div class="post">
-<b>${p.email}</b><br>${p.content}
-</div>`;
-});
+  const { data } = await supabase
+    .from("posts")
+    .select("*")
+    .order("created_at", { ascending: false });
+
+  postsList.innerHTML = "";
+
+  data.forEach(p=>{
+    postsList.innerHTML += `
+      <div class="post">
+        <div class="email">${p.email}</div>
+        <div>${p.content}</div>
+      </div>
+    `;
+  });
 }
 </script>
 
