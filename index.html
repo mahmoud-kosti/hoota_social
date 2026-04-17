@@ -12,6 +12,7 @@ body {
   color: white;
 }
 
+/* NAV */
 .navbar {
   background: #020617;
   padding: 15px;
@@ -20,36 +21,109 @@ body {
   border-bottom: 1px solid #1e293b;
 }
 
+/* CONTAINER */
 .container {
-  max-width: 500px;
+  max-width: 520px;
   margin: auto;
   padding: 15px;
 }
 
+/* CARD LOGIN 3D */
+.card {
+  background: #020617;
+  padding: 20px;
+  border-radius: 15px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+  transform: perspective(800px) rotateX(2deg);
+  transition: 0.3s;
+}
+
+.card:hover {
+  transform: perspective(800px) rotateX(0deg) scale(1.01);
+}
+
 input, button {
   width: 100%;
-  margin: 5px 0;
+  margin: 6px 0;
   padding: 10px;
   border-radius: 8px;
   border: none;
+}
+
+input {
+  background: #0f172a;
+  color: white;
+  border: 1px solid #1e293b;
 }
 
 button {
   background: #3b82f6;
   color: white;
   cursor: pointer;
+  transition: 0.3s;
 }
 
+button:hover {
+  transform: scale(1.03);
+}
+
+/* SWITCH */
+.switch {
+  color: #60a5fa;
+  cursor: pointer;
+  margin-top: 10px;
+  text-align: center;
+}
+
+/* POSTS */
 .post {
   background: #020617;
   padding: 10px;
   margin-top: 10px;
   border-radius: 10px;
+  border: 1px solid #1e293b;
 }
 
 .email {
   font-size: 12px;
   color: #94a3b8;
+}
+
+/* LOGOUT */
+.logout {
+  background: #ef4444;
+  margin-top: 10px;
+}
+
+/* FOOTER */
+.footer {
+  margin-top: 25px;
+  text-align: center;
+  font-size: 13px;
+  opacity: 0.8;
+}
+
+/* WHATSAPP */
+.whatsapp {
+  display: flex;
+  justify-content: center;
+  margin-top: 10px;
+}
+
+.whatsapp a {
+  background: #25D366;
+  padding: 10px 15px;
+  border-radius: 50px;
+  color: white;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: 0.3s;
+}
+
+.whatsapp a:hover {
+  transform: scale(1.05);
 }
 </style>
 </head>
@@ -57,147 +131,170 @@ button {
 <body>
 
 <div class="navbar">
-  🔥 My Social App
-  <a href="profile.html" style="color:white; margin-left:15px;">
-    👤 Profile
-  </a>
+🔥 My Social App
 </div>
 
 <div class="container">
 
-  <h3>إنشاء حساب</h3>
-  <input type="email" id="regEmail" placeholder="Email">
-  <input type="password" id="regPass" placeholder="Password">
-  <button onclick="register()">Register</button>
+<!-- 🔐 AUTH -->
+<div id="authBox" class="card">
 
-  <h3>تسجيل دخول</h3>
-  <input type="email" id="logEmail" placeholder="Email">
-  <input type="password" id="logPass" placeholder="Password">
-  <button onclick="login()">Login</button>
+  <div id="loginBox">
+    <h3>تسجيل الدخول</h3>
+    <input type="email" id="logEmail" placeholder="Email">
+    <input type="password" id="logPass" placeholder="Password">
+    <button onclick="login()">Login</button>
+    <div class="switch" onclick="toggleForm()">إنشاء حساب جديد</div>
+  </div>
 
-  <button onclick="logout()">Logout</button>
+  <div id="registerBox" style="display:none">
+    <h3>إنشاء حساب</h3>
+    <input type="email" id="regEmail" placeholder="Email">
+    <input type="password" id="regPass" placeholder="Password">
+    <input type="password" id="regPass2" placeholder="Confirm Password">
+    <button onclick="register()">Register</button>
+    <div class="switch" onclick="toggleForm()">رجوع لتسجيل الدخول</div>
+  </div>
 
-  <p id="status"></p>
+</div>
 
-  <hr>
+<!-- 🟢 POSTS -->
+<div id="appBox" style="display:none">
 
   <h3>اكتب بوست</h3>
   <input type="text" id="postInput" placeholder="اكتب هنا">
   <button onclick="addPost()">نشر</button>
 
+  <button class="logout" onclick="logout()">تسجيل خروج</button>
+
   <div id="postsList"></div>
+
+  <!-- WhatsApp -->
+  <div class="whatsapp">
+    <a href="https://wa.me/249900623733" target="_blank">
+      💬 تواصل واتساب
+    </a>
+  </div>
+
+  <!-- Footer -->
+  <div class="footer">
+    جميع الحقوق محفوظة لدى HOota O Black ©
+  </div>
 
 </div>
 
-<!-- 🔥 Supabase -->
+</div>
+
+<!-- SUPABASE -->
 <script type="module">
 import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
 
-// 🔑 بياناتك
 const supabaseUrl = "https://ymepvanoqgvntcuacnhm.supabase.co";
 const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InltZXB2YW5vcWd2bnRjdWFjbmhtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYyNzE2MDMsImV4cCI6MjA5MTg0NzYwM30.T8vXyv_DsSGoas8kLpNMI3ULEA8keB2pTseHnGUlZyw";
 
 const supabase = createClient(supabaseUrl, supabaseKey);
 
-// حالة المستخدم
-async function checkUser() {
-  const { data: { user } } = await supabase.auth.getUser();
-  const status = document.getElementById("status");
+/* UI */
+const authBox = document.getElementById("authBox");
+const appBox = document.getElementById("appBox");
 
-  if (user) {
-    status.innerText = "✅ مسجل دخول: " + user.email;
-    loadPosts();
-  } else {
-    status.innerText = "❌ غير مسجل دخول";
-  }
+/* TOGGLE FORM */
+window.toggleForm = function(){
+  document.getElementById("loginBox").style.display =
+  document.getElementById("loginBox").style.display === "none" ? "block" : "none";
+
+  document.getElementById("registerBox").style.display =
+  document.getElementById("registerBox").style.display === "none" ? "block" : "none";
 }
 
+/* CHECK USER */
+async function checkUser(){
+  const { data: { user } } = await supabase.auth.getUser();
+
+  if(user){
+    authBox.style.display = "none";
+    appBox.style.display = "block";
+    loadPosts();
+  } else {
+    authBox.style.display = "block";
+    appBox.style.display = "none";
+  }
+}
 checkUser();
 
-// إنشاء حساب
-window.register = async function () {
-  const email = document.getElementById("regEmail").value;
-  const pass = document.getElementById("regPass").value;
+/* REGISTER */
+window.register = async function(){
+  const email = regEmail.value;
+  const pass = regPass.value;
+  const pass2 = regPass2.value;
+
+  if(pass !== pass2){
+    alert("كلمات المرور غير متطابقة");
+    return;
+  }
 
   const { error } = await supabase.auth.signUp({
-    email: email,
+    email,
     password: pass
   });
 
-  if (error) alert(error.message);
+  if(error) alert(error.message);
   else alert("تم إنشاء الحساب");
-};
+}
 
-// تسجيل دخول
-window.login = async function () {
-  const email = document.getElementById("logEmail").value;
-  const pass = document.getElementById("logPass").value;
-
+/* LOGIN */
+window.login = async function(){
   const { error } = await supabase.auth.signInWithPassword({
-    email: email,
-    password: pass
+    email: logEmail.value,
+    password: logPass.value
   });
 
-  if (error) alert(error.message);
-  else {
-    alert("تم تسجيل الدخول");
-    checkUser();
-  }
-};
+  if(error) alert(error.message);
+  else checkUser();
+}
 
-// تسجيل خروج
-window.logout = async function () {
+/* LOGOUT */
+window.logout = async function(){
   await supabase.auth.signOut();
-  alert("تم تسجيل الخروج");
   checkUser();
-};
+}
 
-// نشر بوست
-window.addPost = async function () {
-  const content = document.getElementById("postInput").value;
+/* ADD POST */
+window.addPost = async function(){
+  const content = postInput.value;
 
   const { data: { user } } = await supabase.auth.getUser();
 
-  if (!user) {
+  if(!user){
     alert("سجل دخول أولاً");
     return;
   }
 
-  const { error } = await supabase.from("posts").insert([
-    {
-      email: user.email,
-      content: content
-    }
+  await supabase.from("posts").insert([
+    { email: user.email, content }
   ]);
 
-  if (error) {
-    alert(error.message);
-  } else {
-    document.getElementById("postInput").value = "";
-    loadPosts();
-  }
-};
+  postInput.value = "";
+  loadPosts();
+}
 
-// تحميل البوستات
-async function loadPosts() {
+/* LOAD POSTS */
+async function loadPosts(){
   const { data } = await supabase
     .from("posts")
     .select("*")
     .order("created_at", { ascending: false });
 
-  const list = document.getElementById("postsList");
-  list.innerHTML = "";
+  postsList.innerHTML = "";
 
-  if (data) {
-    data.forEach(post => {
-      list.innerHTML += `
-        <div class="post">
-          <div class="email">${post.email}</div>
-          <div>${post.content}</div>
-        </div>
-      `;
-    });
-  }
+  data.forEach(p=>{
+    postsList.innerHTML += `
+      <div class="post">
+        <div class="email">${p.email}</div>
+        <div>${p.content}</div>
+      </div>
+    `;
+  });
 }
 </script>
 
