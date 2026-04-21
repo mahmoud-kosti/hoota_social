@@ -82,11 +82,39 @@ button:hover {
   margin-top: 10px;
   border-radius: 10px;
   border: 1px solid #1e293b;
+  position: relative;
 }
 
 .email {
   font-size: 12px;
   color: #94a3b8;
+}
+
+.content {
+  margin: 8px 0;
+  word-wrap: break-word;
+}
+
+/* ACTION BUTTONS */
+.actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.actions button {
+  width: auto;
+  padding: 6px 12px;
+  font-size: 12px;
+  margin: 0;
+}
+
+.btn-edit {
+  background: #f59e0b;
+}
+
+.btn-delete {
+  background: #ef4444;
 }
 
 /* LOGOUT */
@@ -261,7 +289,11 @@ window.logout = async function(){
 
 /* ADD POST */
 window.addPost = async function(){
-  const content = postInput.value;
+  const content = postInput.value.trim();
+  if(!content) {
+    alert("اكتب حاجة أول");
+    return;
+  }
 
   const { data: { user } } = await supabase.auth.getUser();
 
@@ -270,28 +302,86 @@ window.addPost = async function(){
     return;
   }
 
-  await supabase.from("posts").insert([
-    { email: user.email, content }
+  const { error } = await supabase.from("posts").insert([
+    { 
+      email: user.email, 
+      content,
+      user_id: user.id 
+    }
   ]);
+
+  if(error) {
+    alert('فشل النشر: ' + error.message);
+    return;
+  }
 
   postInput.value = "";
   loadPosts();
 }
 
+/* DELETE POST */
+window.deletePost = async function(postId){
+  const confirmDelete = confirm('متأكد عايز تحذف البوست؟')
+  if (!confirmDelete) return
+
+  const { error } = await supabase
+    .from('posts')
+    .delete()
+    .eq('id', postId)
+  
+  if (error) {
+    alert('فشل الحذف: ' + error.message)
+  } else {
+    document.getElementById(`post-${postId}`).remove()
+  }
+}
+
+/* EDIT POST */
+window.editPost = async function(postId, oldContent){
+  const newContent = prompt('اكتب المحتوى الجديد:', oldContent)
+  if (!newContent || newContent === oldContent) return
+
+  const { error } = await supabase
+    .from('posts')
+    .update({ content: newContent })
+    .eq('id', postId)
+  
+  if (error) {
+    alert('فشل التعديل: ' + error.message)
+  } else {
+    loadPosts() // نعيد تحميل البوستات عشان يظهر التعديل
+  }
+}
+
 /* LOAD POSTS */
 async function loadPosts(){
-  const { data } = await supabase
+  const { data: { user } } = await supabase.auth.getUser();
+  
+  const { data, error } = await supabase
     .from("posts")
     .select("*")
     .order("created_at", { ascending: false });
 
+  if(error) {
+    console.log(error);
+    return;
+  }
+
   postsList.innerHTML = "";
 
   data.forEach(p=>{
+    const isOwner = user && user.id === p.user_id
+    
     postsList.innerHTML += `
-      <div class="post">
+      <div class="post" id="post-${p.id}">
         <div class="email">${p.email}</div>
-        <div>${p.content}</div>
+        <div class="content">${p.content}</div>
+        ${isOwner ? `
+          <div class="actions">
+            <button class="btn-edit" onclick="editPost(${p.id}, \`${p.content.replace(/`/g, '\\`')}\`)">تعديل</button>
+            <button class="btn-delete" onclick="deletePost(${p.id})">حذف</button>
+          </div>
+        ` : ''}
       </div>
     `;
   });
