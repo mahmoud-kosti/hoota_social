@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <title>My Social App</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
 body {
@@ -327,11 +328,12 @@ window.deletePost = async function(postId){
   const { error } = await supabase
     .from('posts')
     .delete()
-    .eq('id', postId)
+    .eq('id', Number(postId)) // مهم: حولناه لرقم
   
   if (error) {
-    alert('فشل الحذف: ' + error.message)
+    alert('فشل الحذف: ' + error.message + '\nالكود: ' + error.code)
   } else {
+    alert('اتحذف بنجاح')
     document.getElementById(`post-${postId}`).remove()
   }
 }
@@ -344,12 +346,13 @@ window.editPost = async function(postId, oldContent){
   const { error } = await supabase
     .from('posts')
     .update({ content: newContent })
-    .eq('id', postId)
+    .eq('id', Number(postId)) // مهم: حولناه لرقم
   
   if (error) {
-    alert('فشل التعديل: ' + error.message)
+    alert('فشل التعديل: ' + error.message + '\nالكود: ' + error.code)
   } else {
-    loadPosts() // نعيد تحميل البوستات عشان يظهر التعديل
+    alert('اتعدل بنجاح')
+    loadPosts()
   }
 }
 
@@ -364,6 +367,7 @@ async function loadPosts(){
 
   if(error) {
     console.log(error);
+    alert('خطأ في تحميل البوستات: ' + error.message)
     return;
   }
 
@@ -378,7 +382,7 @@ async function loadPosts(){
         <div class="content">${p.content}</div>
         ${isOwner ? `
           <div class="actions">
-            <button class="btn-edit" onclick="editPost(${p.id}, \`${p.content.replace(/`/g, '\\`')}\`)">تعديل</button>
+            <button class="btn-edit" onclick='editPost(${p.id}, ${JSON.stringify(p.content)})'>تعديل</button>
             <button class="btn-delete" onclick="deletePost(${p.id})">حذف</button>
           </div>
         ` : ''}
