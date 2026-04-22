@@ -46,6 +46,7 @@ input, button {
   padding: 10px;
   border-radius: 8px;
   border: none;
+  box-sizing: border-box;
 }
 
 input {
@@ -53,8 +54,7 @@ input {
   color: white;
   border: 1px solid #1e293b;
   text-align: center;
-  font-size: 18px;
-  letter-spacing: 5px;
+  font-size: 16px;
 }
 
 button {
@@ -62,10 +62,16 @@ button {
   color: white;
   cursor: pointer;
   transition: 0.3s;
+  font-size: 16px;
 }
 
 button:hover {
   transform: scale(1.03);
+}
+
+button:disabled {
+  background: #6b7280;
+  cursor: not-allowed;
 }
 
 .switch {
@@ -158,10 +164,19 @@ button:hover {
   font-size: 14px;
 }
 
-.otp-input {
-  letter-spacing: 15px;
-  font-size: 24px;
-  font-weight: bold;
+.message {
+  padding: 12px;
+  border-radius: 8px;
+  margin: 10px 0;
+  text-align: center;
+}
+
+.error {
+  background: #7f1d1d;
+}
+
+.success {
+  background: #14532d;
 }
 </style>
 </head>
@@ -181,7 +196,8 @@ button:hover {
     <h3>تسجيل الدخول</h3>
     <input type="email" id="logEmail" placeholder="Email">
     <input type="password" id="logPass" placeholder="Password">
-    <button onclick="login()">Login</button>
+    <button onclick="login()" id="loginBtn">Login</button>
+    <div id="loginMsg"></div>
     <div class="switch" onclick="showRegister()">إنشاء حساب جديد</div>
   </div>
 
@@ -190,18 +206,19 @@ button:hover {
     <input type="email" id="regEmail" placeholder="Email">
     <input type="password" id="regPass" placeholder="Password">
     <input type="password" id="regPass2" placeholder="Confirm Password">
-    <button onclick="register()">Register</button>
+    <button onclick="register()" id="registerBtn">Register</button>
+    <div id="registerMsg"></div>
     <div class="switch" onclick="showLogin()">رجوع لتسجيل الدخول</div>
   </div>
 
-  <div id="otpBox" style="display:none">
-    <h3>أدخل كود التحقق</h3>
+  <div id="checkEmailBox" style="display:none">
+    <h3>راجع إيميلك</h3>
     <div class="notice">
-      رسلنا كود من 6 أرقام على <br><span id="otpEmail"></span>
+      أرسلنا رابط تأكيد على <br><b id="checkEmailText"></b><br><br>
+      افتح إيميلك واضغط "Confirm your signup" عشان تفعل حسابك
     </div>
-    <input type="text" id="otpCode" class="otp-input" placeholder="000000" maxlength="6">
-    <button onclick="verifyOtp()">تأكيد الكود</button>
-    <button onclick="resendOtp()" style="background:#6b7280;">إعادة إرسال الكود</button>
+    <p style="font-size:13px;opacity:0.8">ما لقيت الرسالة؟ راجع مجلد Spam أو الرسائل غير المرغوب فيها</p>
+    <button onclick="resendEmail()" id="resendBtn" style="background:#6b7280;">إعادة إرسال الرابط</button>
     <div class="switch" onclick="showLogin()">رجوع لتسجيل الدخول</div>
   </div>
 
@@ -244,28 +261,44 @@ const supabase = createClient(supabaseUrl, supabaseKey);
 /* UI */
 const authBox = document.getElementById("authBox");
 const appBox = document.getElementById("appBox");
+const loginBox = document.getElementById("loginBox");
+const registerBox = document.getElementById("registerBox");
+const checkEmailBox = document.getElementById("checkEmailBox");
 
 /* TOGGLE FORM */
 window.showLogin = function(){
   loginBox.style.display = "block";
   registerBox.style.display = "none";
-  otpBox.style.display = "none";
+  checkEmailBox.style.display = "none";
+  clearMessages();
 }
 
 window.showRegister = function(){
   loginBox.style.display = "none";
   registerBox.style.display = "block";
-  otpBox.style.display = "none";
+  checkEmailBox.style.display = "none";
+  clearMessages();
 }
 
-window.showOtp = function(email){
+window.showCheckEmail = function(email){
   loginBox.style.display = "none";
   registerBox.style.display = "none";
-  otpBox.style.display = "block";
-  document.getElementById("otpEmail").textContent = email;
+  checkEmailBox.style.display = "block";
+  document.getElementById("checkEmailText").textContent = email;
+  clearMessages();
 }
 
-/* CHECK USER */
+function clearMessages(){
+  document.getElementById("loginMsg").innerHTML = "";
+  document.getElementById("registerMsg").innerHTML = "";
+}
+
+function showMessage(elementId, text, isError = true){
+  const el = document.getElementById(elementId);
+  el.innerHTML = `<div class="message ${isError? 'error' : 'success'}">${text}</div>`;
+}
+
+/* CHECK USER - ده بشتغل أول ما الصفحة تفتح + بعد الضغط على رابط الإيميل */
 async function checkUser(){
   const { data: { user } } = await supabase.auth.getUser();
 
@@ -276,7 +309,7 @@ async function checkUser(){
   } else {
     authBox.style.display = "block";
     appBox.style.display = "none";
-    showLogin()
+    showLogin();
   }
 }
 checkUser();
@@ -286,82 +319,88 @@ window.register = async function(){
   const email = regEmail.value.trim();
   const pass = regPass.value;
   const pass2 = regPass2.value;
+  const btn = document.getElementById("registerBtn");
 
   if(!email || !pass){
-    alert("املأ كل الحقول");
+    showMessage("registerMsg", "املأ كل الحقول");
     return;
   }
 
   if(pass !== pass2){
-    alert("كلمات المرور غير متطابقة");
+    showMessage("registerMsg", "كلمات المرور غير متطابقة");
     return;
   }
 
   if(pass.length < 6){
-    alert("كلمة المرور لازم 6 أحرف على الأقل");
+    showMessage("registerMsg", "كلمة المرور لازم 6 أحرف على الأقل");
     return;
   }
 
+  btn.disabled = true;
+  btn.textContent = "جاري الإنشاء...";
+
   const { data, error } = await supabase.auth.signUp({
     email,
-    password: pass
+    password: pass,
+    options: {
+      emailRedirectTo: window.location.origin
+    }
   });
+
+  btn.disabled = false;
+  btn.textContent = "Register";
+
+  if(error) {
+    showMessage("registerMsg", error.message);
+  } else {
+    showCheckEmail(email);
+  }
+}
+
+/* RESEND EMAIL */
+window.resendEmail = async function(){
+  const email = document.getElementById("checkEmailText").textContent;
+  const btn = document.getElementById("resendBtn");
+  
+  btn.disabled = true;
+  btn.textContent = "جاري الإرسال...";
+
+  const { error } = await supabase.auth.resend({
+    type: 'signup',
+    email: email,
+    options: {
+      emailRedirectTo: window.location.origin
+    }
+  });
+  
+  btn.disabled = false;
+  btn.textContent = "إعادة إرسال الرابط";
 
   if(error) {
     alert(error.message);
   } else {
-    showOtp(email);
+    alert('رسلنا الرابط تاني، شيك إيميلك');
   }
-}
-
-/* VERIFY OTP */
-window.verifyOtp = async function(){
-  const email = document.getElementById("otpEmail").textContent;
-  const token = otpCode.value.trim();
-
-  if(token.length !== 6){
-    alert("الكود لازم 6 أرقام");
-    return;
-  }
-
-  const { data, error } = await supabase.auth.verifyOtp({
-    email,
-    token,
-    type: 'signup'
-  });
-
-  if(error) {
-    alert('كود غلط أو منتهي: ' + error.message);
-  } else {
-    alert('تم تأكيد حسابك بنجاح');
-    checkUser();
-  }
-}
-
-/* RESEND OTP */
-window.resendOtp = async function(){
-  const email = document.getElementById("otpEmail").textContent;
-  
-  const { error } = await supabase.auth.resend({
-    type: 'signup',
-    email: email
-  });
-  
-  if(error) alert(error.message);
-  else alert('رسلنا الكود تاني، شيك إيميلك');
 }
 
 /* LOGIN */
 window.login = async function(){
+  const btn = document.getElementById("loginBtn");
+  btn.disabled = true;
+  btn.textContent = "جاري الدخول...";
+
   const { data, error } = await supabase.auth.signInWithPassword({
     email: logEmail.value,
     password: logPass.value
   });
 
+  btn.disabled = false;
+  btn.textContent = "Login";
+
   if(error) {
-    alert(error.message);
+    showMessage("loginMsg", error.message);
   } else if(data.user && !data.user.email_confirmed_at){
-    showOtp(data.user.email);
+    showCheckEmail(data.user.email);
   } else {
     checkUser();
   }
@@ -463,7 +502,7 @@ async function loadPosts(){
       <div class="post" id="post-${p.id}">
         <div class="email">${p.email}</div>
         <div class="content">${p.content}</div>
-        ${isOwner ? `
+        ${isOwner? `
           <div class="actions">
             <button class="btn-edit" onclick='editPost("${p.id}", ${JSON.stringify(p.content)})'>تعديل</button>
             <button class="btn-delete" onclick="deletePost('${p.id}')">حذف</button>
