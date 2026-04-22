@@ -313,7 +313,7 @@ button:disabled {
 }
 
 .error {
-  background: rgba(127, 29, 29, 0.4);
+  background: rgba(127, 29, 0.4);
   border: 1px solid rgba(239, 68, 68, 0.5);
 }
 
@@ -547,35 +547,40 @@ function showToast(text){
   setTimeout(() => container.innerHTML = "", 3000);
 }
 
-/* HANDLE AUTH REDIRECT - التعديل المهم */
+/* HANDLE AUTH REDIRECT - النسخة المصححة */
 async function initAuth(){
+  const { data: { session }, error } = await supabase.auth.getSession();
+  
   const hashParams = new URLSearchParams(window.location.hash.substring(1));
   const type = hashParams.get('type');
-  
-  await supabase.auth.getSession();
   
   if(type === 'recovery'){
     authBox.style.display = "block";
     appBox.style.display = "none";
     showResetPassword();
-    window.history.replaceState(null, '', window.location.pathname);
+    window.history.replaceState(null, '', window.location.pathname + window.location.search);
     return;
   }
   
-  const { data: { user } } = await supabase.auth.getUser();
-
-  if(user && user.email_confirmed_at){
+  if(session && session.user) {
+    if(window.location.hash.includes('access_token')) {
+      showToast("تم تأكيد الحساب ✓");
+      window.history.replaceState(null, '', window.location.pathname + window.location.search);
+    }
     authBox.style.display = "none";
     appBox.style.display = "block";
     loadPosts();
-    if(window.location.hash.includes('access_token')) {
-      showToast("تم تأكيد الحساب ✓");
-      window.history.replaceState(null, '', window.location.pathname);
-    }
   } else {
-    authBox.style.display = "block";
-    appBox.style.display = "none";
-    showLogin();
+    const { data: { user } } = await supabase.auth.getUser();
+    if(user && user.email_confirmed_at){
+      authBox.style.display = "none";
+      appBox.style.display = "block";
+      loadPosts();
+    } else {
+      authBox.style.display = "block";
+      appBox.style.display = "none";
+      showLogin();
+    }
   }
 }
 
