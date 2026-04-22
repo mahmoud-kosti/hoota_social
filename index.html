@@ -547,14 +547,21 @@ function showToast(text){
   setTimeout(() => container.innerHTML = "", 3000);
 }
 
-/* CHECK USER + HANDLE PASSWORD RECOVERY */
-supabase.auth.onAuthStateChange((event, session) => {
-  if (event === 'PASSWORD_RECOVERY') {
+/* HANDLE AUTH REDIRECT - ده التعديل الوحيد */
+async function handleAuthRedirect(){
+  const hashParams = new URLSearchParams(window.location.hash.substring(1));
+  const type = hashParams.get('type');
+  
+  if(type === 'recovery'){
     authBox.style.display = "block";
     appBox.style.display = "none";
     showResetPassword();
+    window.history.replaceState(null, '', window.location.pathname);
+    return;
   }
-});
+  
+  await checkUser();
+}
 
 async function checkUser(){
   const { data: { user } } = await supabase.auth.getUser();
@@ -569,7 +576,8 @@ async function checkUser(){
     showLogin();
   }
 }
-checkUser();
+
+handleAuthRedirect();
 
 /* REGISTER */
 window.register = async function(){
