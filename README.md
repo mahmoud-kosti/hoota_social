@@ -1,20 +1,16 @@
 <div align="center">
 
-<img src="https://raw.githubusercontent.com/mahmoud-kosti/hoota_social/main/banner.png" alt="HOota Social Banner" width="100%">
-
 # 🔥 HOota Social
 
 **منصة تواصل اجتماعي سودانية بتصميم Glassmorphism عصري 2026**
 
 [Live Demo](https://mahmoud-kosti.github.io/hoota_social/)
 [Report Bug](https://github.com/mahmoud-kosti/hoota_social/issues)
-[Request Feature](https://github.com/mahmoud-kosti/hoota_social/issues)
 
-[![HTML](https://img.shields.io/badge/HTML5-E34F26?style=for-the-badge&logo=html5&logoColor=white)]()
-[![CSS](https://img.shields.io/badge/CSS3-1572B6?style=for-the-badge&logo=css3&logoColor=white)]()
-[![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black)]()
-[![Supabase](https://img.shields.io/badge/Supabase-3ECF8E?style=for-the-badge&logo=supabase&logoColor=white)]()
-[![License](https://img.shields.io/badge/License-MIT-blue?style=for-the-badge)]()
+[[HTML](https://img.shields.io/badge/HTML5-E34F26?style=for-the-badge&logo=html5&logoColor=white)]()
+[[CSS](https://img.shields.io/badge/CSS3-1572B6?style=for-the-badge&logo=css3&logoColor=white)]()
+[[JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black)]()
+[[Supabase](https://img.shields.io/badge/Supabase-3ECF8E?style=for-the-badge&logo=supabase&logoColor=white)]()
 
 </div>
 
@@ -83,8 +79,6 @@
 
 ## 🛠️ التقنيات المستخدمة
 
-هذا المشروع مبني باستخدام أحدث التقنيات في مجال الويب:
-
 - **الواجهة الأمامية**: `HTML5` `CSS3` `JavaScript ES6+`
 - **الخلفية والخدمات**: [Supabase](https://supabase.com) - للمصادقة وقاعدة بيانات PostgreSQL
 - **الخطوط**: [Cairo Font](https://fonts.google.com/specimen/Cairo) من Google Fonts
@@ -93,14 +87,6 @@
 ---
 
 ## 🚀 التشغيل محلياً
-
-عشان تشغل نسخة من المشروع على جهازك، اتبع الخطوات دي.
-
-### المتطلبات
-- حساب مجاني في [Supabase](https://app.supabase.com)
-- متصفح حديث
-
-### خطوات التثبيت
 
 1. **استنسخ المشروع**
    ```sh
