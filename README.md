@@ -23,24 +23,24 @@
 <table>
   <tr>
     <td align="center" width="50%">
-      <img src="screenshots/login.png" alt="تسجيل الدخول" width="100%">
+      <img src="screenshots/IMG_5275.png" alt="تسجيل الدخول" width="100%">
       <br />
       <sub><b>1. تسجيل الدخول</b></sub>
     </td>
     <td align="center" width="50%">
-      <img src="screenshots/register.png" alt="إنشاء حساب" width="100%">
+      <img src="screenshots/IMG_5276.png" alt="إنشاء حساب" width="100%">
       <br />
       <sub><b>2. إنشاء حساب جديد</b></sub>
     </td>
   </tr>
   <tr>
     <td align="center" width="50%">
-      <img src="screenshots/forgot.png" alt="نسيت كلمة المرور" width="100%">
+      <img src="screenshots/IMG_5277.png" alt="نسيت كلمة المرور" width="100%">
       <br />
       <sub><b>3. استعادة كلمة المرور</b></sub>
     </td>
     <td align="center" width="50%">
-      <img src="screenshots/home.png" alt="الصفحة الرئيسية" width="100%">
+      <img src="screenshots/IMG_5278.png" alt="الصفحة الرئيسية" width="100%">
       <br />
       <sub><b>4. الصفحة الرئيسية - البوستات</b></sub>
     </td>
