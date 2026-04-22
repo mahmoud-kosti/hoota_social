@@ -340,11 +340,10 @@ window.register = async function(){
   btn.textContent = "جاري الإنشاء...";
 
   const { error } = await supabase.auth.signUp({
-    email, password, options: {
-        data: { username: username },
+    email: email, 
+    password: pass, 
+    options: {
         emailRedirectTo: 'https://mahmoud-kosti.github.io/Mahmoud_Academy/'
-    }
-});
     }
   });
 
@@ -368,11 +367,9 @@ window.resendEmail = async function(){
 
   const { error } = await supabase.auth.resend({
     type: 'signup',
-    email: pendingConfirmationEmail,
+    email: email,
     options: {
         emailRedirectTo: 'https://mahmoud-kosti.github.io/Mahmoud_Academy/'
-    }
-});
     }
   });
   
