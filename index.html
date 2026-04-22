@@ -81,6 +81,15 @@ button:disabled {
   text-align: center;
 }
 
+.link {
+  color: #94a3b8;
+  cursor: pointer;
+  margin-top: 8px;
+  text-align: center;
+  font-size: 14px;
+  text-decoration: underline;
+}
+
 .post {
   background: #020617;
   padding: 10px;
@@ -169,6 +178,7 @@ button:disabled {
   border-radius: 8px;
   margin: 10px 0;
   text-align: center;
+  animation: fadeIn 0.3s;
 }
 
 .error {
@@ -178,10 +188,34 @@ button:disabled {
 .success {
   background: #14532d;
 }
+
+.toast {
+  position: fixed;
+  top: 20px;
+  right: 50%;
+  transform: translateX(50%);
+  background: #14532d;
+  padding: 12px 20px;
+  border-radius: 8px;
+  z-index: 9999;
+  animation: slideDown 0.3s;
+}
+
+@keyframes fadeIn {
+  from {opacity: 0;}
+  to {opacity: 1;}
+}
+
+@keyframes slideDown {
+  from {top: -50px; opacity: 0;}
+  to {top: 20px; opacity: 1;}
+}
 </style>
 </head>
 
 <body>
+
+<div id="toastContainer"></div>
 
 <div class="navbar">
 🔥  HOota O Black  🔥
@@ -198,6 +232,7 @@ button:disabled {
     <input type="password" id="logPass" placeholder="Password">
     <button onclick="login()" id="loginBtn">Login</button>
     <div id="loginMsg"></div>
+    <div class="link" onclick="showForgotPassword()">نسيت كلمة المرور؟</div>
     <div class="switch" onclick="showRegister()">إنشاء حساب جديد</div>
   </div>
 
@@ -215,11 +250,28 @@ button:disabled {
     <h3>راجع إيميلك</h3>
     <div class="notice">
       أرسلنا رابط تأكيد على <br><b id="checkEmailText"></b><br><br>
-      افتح إيميلك واضغط "Confirm your signup" عشان تفعل حسابك
+      افتح إيميلك واضغط "تأكيد الحساب" عشان تفعل حسابك
     </div>
-    <p style="font-size:13px;opacity:0.8">ما لقيت الرسالة؟ راجع مجلد Spam أو الرسائل غير المرغوب فيها</p>
+    <p style="font-size:13px;opacity:0.8">ما لقيت الرسالة؟ راجع مجلد Spam</p>
     <button onclick="resendEmail()" id="resendBtn" style="background:#6b7280;">إعادة إرسال الرابط</button>
     <div class="switch" onclick="showLogin()">رجوع لتسجيل الدخول</div>
+  </div>
+
+  <div id="forgotBox" style="display:none">
+    <h3>إعادة تعيين كلمة المرور</h3>
+    <p style="font-size:14px;opacity:0.8">دخل إيميلك وهنرسل لك رابط تعيين كلمة مرور جديدة</p>
+    <input type="email" id="forgotEmail" placeholder="Email">
+    <button onclick="forgotPassword()" id="forgotBtn">إرسال رابط التعيين</button>
+    <div id="forgotMsg"></div>
+    <div class="switch" onclick="showLogin()">رجوع لتسجيل الدخول</div>
+  </div>
+
+  <div id="resetBox" style="display:none">
+    <h3>تعيين كلمة مرور جديدة</h3>
+    <input type="password" id="newPass" placeholder="كلمة المرور الجديدة">
+    <input type="password" id="newPass2" placeholder="تأكيد كلمة المرور">
+    <button onclick="resetPassword()" id="resetBtn">حفظ كلمة المرور</button>
+    <div id="resetMsg"></div>
   </div>
 
 </div>
@@ -264,12 +316,16 @@ const appBox = document.getElementById("appBox");
 const loginBox = document.getElementById("loginBox");
 const registerBox = document.getElementById("registerBox");
 const checkEmailBox = document.getElementById("checkEmailBox");
+const forgotBox = document.getElementById("forgotBox");
+const resetBox = document.getElementById("resetBox");
 
 /* TOGGLE FORM */
 window.showLogin = function(){
   loginBox.style.display = "block";
   registerBox.style.display = "none";
   checkEmailBox.style.display = "none";
+  forgotBox.style.display = "none";
+  resetBox.style.display = "none";
   clearMessages();
 }
 
@@ -277,6 +333,8 @@ window.showRegister = function(){
   loginBox.style.display = "none";
   registerBox.style.display = "block";
   checkEmailBox.style.display = "none";
+  forgotBox.style.display = "none";
+  resetBox.style.display = "none";
   clearMessages();
 }
 
@@ -284,13 +342,35 @@ window.showCheckEmail = function(email){
   loginBox.style.display = "none";
   registerBox.style.display = "none";
   checkEmailBox.style.display = "block";
+  forgotBox.style.display = "none";
+  resetBox.style.display = "none";
   document.getElementById("checkEmailText").textContent = email;
+  clearMessages();
+}
+
+window.showForgotPassword = function(){
+  loginBox.style.display = "none";
+  registerBox.style.display = "none";
+  checkEmailBox.style.display = "none";
+  forgotBox.style.display = "block";
+  resetBox.style.display = "none";
+  clearMessages();
+}
+
+window.showResetPassword = function(){
+  loginBox.style.display = "none";
+  registerBox.style.display = "none";
+  checkEmailBox.style.display = "none";
+  forgotBox.style.display = "none";
+  resetBox.style.display = "block";
   clearMessages();
 }
 
 function clearMessages(){
   document.getElementById("loginMsg").innerHTML = "";
   document.getElementById("registerMsg").innerHTML = "";
+  document.getElementById("forgotMsg").innerHTML = "";
+  document.getElementById("resetMsg").innerHTML = "";
 }
 
 function showMessage(elementId, text, isError = true){
@@ -298,9 +378,24 @@ function showMessage(elementId, text, isError = true){
   el.innerHTML = `<div class="message ${isError? 'error' : 'success'}">${text}</div>`;
 }
 
-/* CHECK USER - ده بشتغل أول ما الصفحة تفتح + بعد الضغط على رابط الإيميل */
+function showToast(text){
+  const container = document.getElementById("toastContainer");
+  container.innerHTML = `<div class="toast">${text}</div>`;
+  setTimeout(() => container.innerHTML = "", 3000);
+}
+
+/* CHECK USER */
 async function checkUser(){
   const { data: { user } } = await supabase.auth.getUser();
+  
+  // لو جاي من رابط reset password
+  const hash = window.location.hash;
+  if(hash.includes('type=recovery')){
+    authBox.style.display = "block";
+    appBox.style.display = "none";
+    showResetPassword();
+    return;
+  }
 
   if(user && user.email_confirmed_at){
     authBox.style.display = "none";
@@ -354,6 +449,7 @@ window.register = async function(){
     showMessage("registerMsg", error.message);
   } else {
     showCheckEmail(email);
+    showToast("تم إنشاء الحساب - راجع إيميلك للتأكيد");
   }
 }
 
@@ -379,7 +475,7 @@ window.resendEmail = async function(){
   if(error) {
     alert(error.message);
   } else {
-    alert('رسلنا الرابط تاني، شيك إيميلك');
+    showToast('رسلنا الرابط تاني، شيك إيميلك');
   }
 }
 
@@ -402,13 +498,80 @@ window.login = async function(){
   } else if(data.user && !data.user.email_confirmed_at){
     showCheckEmail(data.user.email);
   } else {
+    showToast("تم تسجيل الدخول بنجاح");
     checkUser();
+  }
+}
+
+/* FORGOT PASSWORD */
+window.forgotPassword = async function(){
+  const email = forgotEmail.value.trim();
+  const btn = document.getElementById("forgotBtn");
+  
+  if(!email){
+    showMessage("forgotMsg", "دخل إيميلك أول");
+    return;
+  }
+
+  btn.disabled = true;
+  btn.textContent = "جاري الإرسال...";
+
+  const { error } = await supabase.auth.resetPasswordForEmail(email, {
+    redirectTo: 'https://mahmoud-kosti.github.io/Mahmoud_Academy/'
+  });
+  
+  btn.disabled = false;
+  btn.textContent = "إرسال رابط التعيين";
+
+  if(error) {
+    showMessage("forgotMsg", error.message);
+  } else {
+    showMessage("forgotMsg", "رسلنا رابط تعيين كلمة المرور على إيميلك", false);
+  }
+}
+
+/* RESET PASSWORD */
+window.resetPassword = async function(){
+  const pass = newPass.value;
+  const pass2 = newPass2.value;
+  const btn = document.getElementById("resetBtn");
+  
+  if(!pass || !pass2){
+    showMessage("resetMsg", "املأ الحقلين");
+    return;
+  }
+
+  if(pass !== pass2){
+    showMessage("resetMsg", "كلمات المرور غير متطابقة");
+    return;
+  }
+
+  if(pass.length < 6){
+    showMessage("resetMsg", "كلمة المرور لازم 6 أحرف على الأقل");
+    return;
+  }
+
+  btn.disabled = true;
+  btn.textContent = "جاري الحفظ...";
+
+  const { error } = await supabase.auth.updateUser({ password: pass });
+  
+  btn.disabled = false;
+  btn.textContent = "حفظ كلمة المرور";
+
+  if(error) {
+    showMessage("resetMsg", error.message);
+  } else {
+    showToast("تم تغيير كلمة المرور بنجاح");
+    window.location.hash = "";
+    setTimeout(() => checkUser(), 1500);
   }
 }
 
 /* LOGOUT */
 window.logout = async function(){
   await supabase.auth.signOut();
+  showToast("تم تسجيل الخروج");
   checkUser();
 }
 
@@ -441,6 +604,7 @@ window.addPost = async function(){
   }
 
   postInput.value = "";
+  showToast("تم النشر");
   loadPosts();
 }
 
@@ -458,6 +622,7 @@ window.deletePost = async function(postId){
     alert('فشل الحذف: ' + error.message)
   } else {
     document.getElementById(`post-${postId}`).remove()
+    showToast("تم الحذف");
   }
 }
 
@@ -475,6 +640,7 @@ window.editPost = async function(postId, oldContent){
   if (error) {
     alert('فشل التعديل: ' + error.message)
   } else {
+    showToast("تم التعديل");
     loadPosts()
   }
 }
