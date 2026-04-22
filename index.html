@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>HOota O Black</title>
+<title>HOota Social</title>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&display=swap" rel="stylesheet">
 
 <style>
@@ -361,7 +361,7 @@ button:disabled {
 <div id="toastContainer"></div>
 
 <div class="navbar">
-<span>🔥 HOota O Black 🔥</span>
+<span>🔥 HOota Social 🔥</span>
 </div>
 
 <div class="container">
@@ -457,7 +457,7 @@ button:disabled {
   </div>
 
   <div class="footer">
-    جميع الحقوق محفوظة لدى HOota O Black © 2026
+    جميع الحقوق محفوظة لدى HOota Social © 2026
   </div>
 
 </div>
@@ -547,15 +547,13 @@ function showToast(text){
   setTimeout(() => container.innerHTML = "", 3000);
 }
 
-/* HANDLE AUTH REDIRECT - التعديل المهم هنا */
+/* HANDLE AUTH REDIRECT - التعديل المهم */
 async function initAuth(){
   const hashParams = new URLSearchParams(window.location.hash.substring(1));
   const type = hashParams.get('type');
   
-  // 1. خلي Supabase يقرا التوكن أول
   await supabase.auth.getSession();
   
-  // 2. لو ده رابط recovery وقف هنا واظهر صفحة كلمة المرور
   if(type === 'recovery'){
     authBox.style.display = "block";
     appBox.style.display = "none";
@@ -564,7 +562,6 @@ async function initAuth(){
     return;
   }
   
-  // 3. غير كده شيك المستخدم عادي
   const { data: { user } } = await supabase.auth.getUser();
 
   if(user && user.email_confirmed_at){
@@ -613,7 +610,7 @@ window.register = async function(){
     email: email,
     password: pass,
     options: {
-        emailRedirectTo: 'https://mahmoud-kosti.github.io/Mahmoud_Academy/'
+        emailRedirectTo: 'https://mahmoud-kosti.github.io/hoota_social/'
     }
   });
 
@@ -640,7 +637,7 @@ window.resendEmail = async function(){
     type: 'signup',
     email: email,
     options: {
-        emailRedirectTo: 'https://mahmoud-kosti.github.io/Mahmoud_Academy/'
+        emailRedirectTo: 'https://mahmoud-kosti.github.io/hoota_social/'
     }
   });
 
@@ -692,7 +689,7 @@ window.forgotPassword = async function(){
   btn.textContent = "جاري الإرسال...";
 
   const { error } = await supabase.auth.resetPasswordForEmail(email, {
-    redirectTo: 'https://mahmoud-kosti.github.io/Mahmoud_Academy/'
+    redirectTo: 'https://mahmoud-kosti.github.io/hoota_social/'
   });
 
   btn.disabled = false;
