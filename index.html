@@ -3,19 +3,22 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>HOota Social 2026</title>
-<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&family=Orbitron:wght@400;900&display=swap" rel="stylesheet">
+<title>HOota Social</title>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&display=swap" rel="stylesheet">
 
 <style>
 :root {
-  --bg-dark: #05050a;
-  --glass: rgba(255, 255, 255, 0.03);
-  --glass-border: rgba(255, 255, 255, 0.1);
-  --accent-blue: #00d2ff;
-  --accent-purple: #9d50bb;
-  --neon-glow: 0 0 15px rgba(157, 80, 187, 0.4);
-  --text-main: #e0e0e0;
-  --input-focus: rgba(0, 210, 255, 0.2);
+  --bg: #0a0a0f;
+  --card: rgba(20, 20, 35, 0.6);
+  --card-border: rgba(255, 255, 255, 0.1);
+  --primary: #6366f1;
+  --primary-hover: #4f46e5;
+  --danger: #ef4444;
+  --warning: #f59e0b;
+  --success: #10b981;
+  --text: #f1f5f9;
+  --text-muted: #94a3b8;
+  --input-bg: rgba(15, 23, 42, 0.8);
 }
 
 * {
@@ -27,421 +30,821 @@
 
 body {
   font-family: 'Cairo', sans-serif;
-  background: var(--bg-dark);
-  color: var(--text-main);
+  background: var(--bg);
+  color: var(--text);
   min-height: 100vh;
+  background-image:
+    radial-gradient(at 20% 30%, rgba(99, 102, 241, 0.15) 0px, transparent 50%),
+    radial-gradient(at 80% 70%, rgba(236, 72, 153, 0.1) 0px, transparent 50%);
   overflow-x: hidden;
-  background-attachment: fixed;
-  /* خلفية فضائية ديناميكية */
-  background-image: 
-    radial-gradient(circle at 10% 20%, rgba(0, 210, 255, 0.05) 0%, transparent 40%),
-    radial-gradient(circle at 90% 80%, rgba(157, 80, 187, 0.08) 0%, transparent 40%);
 }
 
-/* بنر الموقع المتطور */
-.hero-banner {
-  width: 100%;
-  height: 180px;
-  background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  position: relative;
-  overflow: hidden;
-  border-bottom: 2px solid var(--glass-border);
-}
-
-.hero-banner::after {
-  content: '';
-  position: absolute;
-  width: 200%;
-  height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.05), transparent);
-  transform: rotate(-45deg);
-  animation: shine-banner 6s infinite;
-}
-
-@keyframes shine-banner {
-  0% { left: -100%; }
-  100% { left: 100%; }
-}
-
-.logo-text {
-  font-family: 'Orbitron', sans-serif;
-  font-size: 32px;
+.navbar {
+  background: rgba(10, 10, 15, 0.8);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  padding: 20px;
+  text-align: center;
+  font-size: 24px;
   font-weight: 900;
-  letter-spacing: 4px;
-  background: linear-gradient(to right, #fff, var(--accent-blue), #fff);
-  background-size: 200% auto;
+  border-bottom: 1px solid var(--card-border);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  letter-spacing: 1px;
+}
+
+.navbar span {
+  background: linear-gradient(135deg, #6366f1, #ec4899);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
-  animation: textGradient 3s linear infinite;
-  filter: drop-shadow(0 0 10px rgba(0,210,255,0.5));
-}
-
-@keyframes textGradient {
-  to { background-position: 200% center; }
+  background-clip: text;
 }
 
 .container {
-  max-width: 450px;
-  margin: -40px auto 40px;
-  padding: 0 15px;
-  position: relative;
-  z-index: 10;
+  max-width: 500px;
+  margin: 20px auto;
+  padding: 0 16px 40px;
 }
 
-/* بطاقات بتأثير الزجاج */
 .card {
-  background: var(--glass);
-  backdrop-filter: blur(15px);
-  -webkit-backdrop-filter: blur(15px);
-  border: 1px solid var(--glass-border);
-  border-radius: 30px;
-  padding: 30px;
-  box-shadow: 0 15px 35px rgba(0,0,0,0.5);
+  background: var(--card);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid var(--card-border);
+  padding: 28px 24px;
+  border-radius: 24px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+  animation: slideUp 0.5s ease-out;
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+h3 {
+  font-size: 22px;
+  font-weight: 700;
   margin-bottom: 20px;
-  transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  text-align: center;
 }
 
-.card:hover {
-  border-color: rgba(0, 210, 255, 0.3);
-}
-
-/* مدخلات البيانات */
 .input-group {
-  margin-bottom: 20px;
   position: relative;
+  margin-bottom: 16px;
 }
 
 input {
   width: 100%;
-  background: rgba(255,255,255,0.05);
-  border: 1px solid var(--glass-border);
-  border-radius: 15px;
-  padding: 18px 20px;
-  color: #fff;
+  padding: 16px 20px;
+  background: var(--input-bg);
+  border: 2px solid transparent;
+  border-radius: 16px;
+  color: var(--text);
   font-size: 16px;
-  transition: all 0.4s ease;
+  font-family: 'Cairo', sans-serif;
+  transition: all 0.3s ease;
+  outline: none;
 }
 
 input:focus {
-  outline: none;
-  background: rgba(255,255,255,0.08);
-  border-color: var(--accent-blue);
-  box-shadow: 0 0 20px var(--input-focus);
-  transform: scale(1.02);
+  border-color: var(--primary);
+  background: rgba(15, 23, 42, 1);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(99, 102, 241, 0.2);
 }
 
-/* أزرار عصرية */
+input::placeholder {
+  color: var(--text-muted);
+}
+
 button {
   width: 100%;
   padding: 16px;
-  border-radius: 15px;
+  background: linear-gradient(135deg, var(--primary), var(--primary-hover));
   border: none;
-  font-weight: 700;
-  font-size: 17px;
-  cursor: pointer;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 10px;
-  text-transform: uppercase;
-}
-
-button:active {
-  transform: scale(0.95);
-}
-
-.btn-primary {
-  background: linear-gradient(45deg, var(--accent-blue), var(--accent-purple));
+  border-radius: 16px;
   color: white;
-  box-shadow: var(--neon-glow);
-}
-
-.btn-edit {
-  background: rgba(16, 185, 129, 0.1);
-  border: 1px solid #10b981;
-  color: #10b981;
-  font-size: 14px;
-}
-
-.btn-delete {
-  background: rgba(239, 68, 68, 0.1);
-  border: 1px solid #ef4444;
-  color: #ef4444;
-  font-size: 14px;
-}
-
-.btn-logout {
-  background: transparent;
-  border: 1px solid rgba(255,255,255,0.2);
-  color: #94a3b8;
-  margin-top: 30px;
-}
-
-/* تصميم البوستات */
-.post {
-  background: rgba(255,255,255,0.02);
-  border: 1px solid var(--glass-border);
-  border-radius: 20px;
-  padding: 20px;
-  margin-top: 15px;
-  animation: fadeIn 0.5s ease;
+  font-size: 17px;
+  font-weight: 700;
+  font-family: 'Cairo', sans-serif;
+  cursor: pointer;
+  transition: all 0.3s ease;
   position: relative;
+  overflow: hidden;
 }
 
-.post::before {
+button:before {
   content: '';
   position: absolute;
-  left: 0; top: 20%; height: 60%; width: 3px;
-  background: var(--accent-blue);
-  border-radius: 0 10px 10px 0;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.2);
+  transform: translate(-50%, -50%);
+  transition: width 0.6s, height 0.6s;
 }
 
-.post .email {
-  font-size: 12px;
-  color: var(--accent-blue);
-  font-family: 'Orbitron', sans-serif;
-  margin-bottom: 10px;
-  opacity: 0.8;
+button:active:before {
+  width: 300px;
+  height: 300px;
 }
 
-.post .content {
-  font-size: 16px;
-  line-height: 1.6;
+button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 30px rgba(99, 102, 241, 0.4);
 }
 
-/* روابط التبديل */
-.switch-text {
-  text-align: center;
-  margin-top: 20px;
-  font-size: 14px;
-  color: #94a3b8;
+button:disabled {
+  background: #374151;
+  cursor: not-allowed;
+  transform: none;
 }
 
-.switch-text span {
-  color: var(--accent-blue);
-  font-weight: bold;
+.switch,.link {
+  color: var(--primary);
   cursor: pointer;
+  margin-top: 16px;
+  text-align: center;
+  font-size: 15px;
+  font-weight: 600;
+  transition: all 0.2s;
+}
+
+.switch:hover,.link:hover {
+  color: #818cf8;
+  transform: scale(1.05);
+}
+
+.link {
+  color: var(--text-muted);
+  font-size: 14px;
   text-decoration: underline;
 }
 
-/* WhatsApp Floating */
-.whatsapp-float {
-  position: fixed;
-  bottom: 20px;
-  right: 20px;
-  background: #25D366;
-  width: 50px;
-  height: 50px;
-  border-radius: 50%;
+.post {
+  background: var(--card);
+  backdrop-filter: blur(20px);
+  border: 1px solid var(--card-border);
+  padding: 18px;
+  margin-top: 16px;
+  border-radius: 20px;
+  animation: fadeIn 0.4s ease-out;
+  transition: all 0.3s;
+}
+
+.post:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3);
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+.email {
+  font-size: 13px;
+  color: var(--text-muted);
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.email:before {
+  content: '👤';
+}
+
+.content {
+  margin: 12px 0;
+  font-size: 16px;
+  line-height: 1.6;
+  word-wrap: break-word;
+}
+
+.actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.actions button {
+  width: auto;
+  padding: 10px 18px;
+  font-size: 14px;
+  margin: 0;
+  flex: 1;
+}
+
+.btn-edit {
+  background: linear-gradient(135deg, var(--warning), #d97706);
+}
+
+.btn-delete {
+  background: linear-gradient(135deg, var(--danger), #dc2626);
+}
+
+.logout {
+  background: linear-gradient(135deg, var(--danger), #dc2626);
+  margin-top: 20px;
+}
+
+.footer {
+  margin-top: 30px;
+  text-align: center;
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+.whatsapp {
   display: flex;
   justify-content: center;
+  margin-top: 20px;
+}
+
+.whatsapp a {
+  background: linear-gradient(135deg, #25D366, #128C7E);
+  padding: 14px 24px;
+  border-radius: 50px;
+  color: white;
+  text-decoration: none;
+  display: flex;
   align-items: center;
-  box-shadow: 0 10px 20px rgba(37, 211, 102, 0.3);
-  z-index: 1000;
-  animation: pulse-wa 2s infinite;
+  gap: 10px;
+  font-weight: 600;
+  transition: all 0.3s;
+  box-shadow: 0 8px 20px rgba(37, 211, 102, 0.3);
 }
 
-@keyframes pulse-wa {
-  0% { box-shadow: 0 0 0 0 rgba(37, 211, 102, 0.7); }
-  70% { box-shadow: 0 0 0 15px rgba(37, 211, 102, 0); }
-  100% { box-shadow: 0 0 0 0 rgba(37, 211, 102, 0); }
+.whatsapp a:hover {
+  transform: translateY(-3px) scale(1.05);
+  box-shadow: 0 12px 30px rgba(37, 211, 102, 0.5);
 }
 
-/* التنبيهات (Toast) */
+.notice {
+  background: rgba(30, 58, 138, 0.3);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(59, 130, 246, 0.3);
+  padding: 18px;
+  border-radius: 16px;
+  margin: 16px 0;
+  text-align: center;
+  font-size: 15px;
+  line-height: 1.7;
+}
+
+.message {
+  padding: 14px;
+  border-radius: 12px;
+  margin: 12px 0;
+  text-align: center;
+  font-weight: 600;
+  animation: shake 0.4s;
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-8px); }
+  75% { transform: translateX(8px); }
+}
+
+.error {
+  background: rgba(127, 29, 29, 0.4);
+  border: 1px solid rgba(239, 68, 68, 0.5);
+}
+
+.success {
+  background: rgba(20, 83, 45, 0.4);
+  border: 1px solid rgba(16, 185, 129, 0.5);
+}
+
 .toast {
   position: fixed;
-  top: 20px;
+  top: 80px;
   left: 50%;
   transform: translateX(-50%);
-  background: rgba(0, 0, 0, 0.8);
-  border: 1px solid var(--accent-blue);
-  color: white;
-  padding: 12px 25px;
-  border-radius: 50px;
-  z-index: 10000;
+  background: rgba(16, 185, 129, 0.95);
   backdrop-filter: blur(10px);
-  animation: slideDown 0.4s cubic-bezier(0.18, 0.89, 0.32, 1.28);
+  padding: 14px 24px;
+  border-radius: 50px;
+  z-index: 9999;
+  font-weight: 700;
+  box-shadow: 0 10px 40px rgba(16, 185, 129, 0.4);
+  animation: toastIn 0.4s ease-out;
 }
 
-@keyframes slideDown {
-  from { transform: translate(-50%, -100px); }
-  to { transform: translate(-50%, 0); }
+@keyframes toastIn {
+  from { top: -100px; opacity: 0; }
+  to { top: 80px; opacity: 1; }
+}
+
+#postInput {
+  min-height: 60px;
+  resize: vertical;
 }
 
 @media (max-width: 480px) {
-  .hero-banner { height: 150px; }
-  .logo-text { font-size: 26px; }
-  .card { padding: 25px 18px; }
+ .container { padding: 0 12px 30px; }
+ .card { padding: 24px 20px; border-radius: 20px; }
+  h3 { font-size: 20px; }
+  input, button { padding: 14px 18px; font-size: 15px; }
 }
 </style>
 </head>
+
 <body>
 
 <div id="toastContainer"></div>
 
-<header class="hero-banner">
-  <div class="logo-text">HOota Social</div>
-  <p style="font-size: 12px; margin-top: 5px; opacity: 0.6; letter-spacing: 2px;">FUTURE OF CONNECTING</p>
-</header>
+<div class="navbar">
+<span>🔥 HOota Social 🔥</span>
+</div>
 
 <div class="container">
 
-  <div id="authBox" class="card">
-    <div id="loginBox">
-      <h2 style="text-align:center; margin-bottom: 25px;">دخول آمن</h2>
-      <div class="input-group">
-        <input type="email" id="logEmail" placeholder="الإيميل الخاص بك">
-      </div>
-      <div class="input-group">
-        <input type="password" id="logPass" placeholder="كلمة المرور">
-      </div>
-      <button class="btn-primary" onclick="login()" id="loginBtn">فتح الحساب 🚀</button>
-      
-      <div class="switch-text">
-        <p onclick="showForgotPassword()" style="margin-bottom:10px; cursor:pointer">هل نسيت كلمة السر؟</p>
-        <p>ليس لديك حساب؟ <span onclick="showRegister()">سجل الآن</span></p>
-      </div>
-    </div>
+<!-- 🔐 AUTH -->
+<div id="authBox" class="card">
 
-    <div id="registerBox" style="display:none">
-      <h2 style="text-align:center; margin-bottom: 25px;">عضوية جديدة</h2>
-      <div class="input-group">
-        <input type="email" id="regEmail" placeholder="الإيميل">
-      </div>
-      <div class="input-group">
-        <input type="password" id="regPass" placeholder="كلمة المرور">
-      </div>
-      <div class="input-group">
-        <input type="password" id="regPass2" placeholder="تأكيد كلمة المرور">
-      </div>
-      <button class="btn-primary" onclick="register()" id="registerBtn">تأكيد التسجيل ✨</button>
-      <div class="switch-text">
-        <p>لديك حساب بالفعل؟ <span onclick="showLogin()">سجل دخولك</span></p>
-      </div>
+  <div id="loginBox">
+    <h3>تسجيل الدخول</h3>
+    <div class="input-group">
+      <input type="email" id="logEmail" placeholder="الإيميل">
     </div>
-
-    <div id="forgotBox" style="display:none">
-      <h2 style="text-align:center; margin-bottom: 25px;">استعادة الوصول</h2>
-      <p style="font-size: 13px; text-align: center; margin-bottom: 15px; opacity: 0.7;">أدخل بريدك الإلكتروني لاستلام رابط إعادة التعيين</p>
-      <div class="input-group">
-        <input type="email" id="forgotEmail" placeholder="الإيميل">
-      </div>
-      <button class="btn-primary" onclick="forgotPassword()" id="forgotBtn">إرسال الرابط 📧</button>
-      <div class="switch-text"><span onclick="showLogin()">عودة للخلف</span></div>
+    <div class="input-group">
+      <input type="password" id="logPass" placeholder="كلمة المرور">
     </div>
+    <button onclick="login()" id="loginBtn">دخول</button>
+    <div id="loginMsg"></div>
+    <div class="link" onclick="showForgotPassword()">نسيت كلمة المرور؟</div>
+    <div class="switch" onclick="showRegister()">إنشاء حساب جديد</div>
   </div>
 
-  <div id="appBox" style="display:none">
-    <div class="card">
-      <h3 style="margin-bottom: 15px; font-size: 18px;">بماذا تفكر اليوم؟</h3>
-      <div class="input-group">
-        <input type="text" id="postInput" placeholder="اكتب شيئاً ملهماً...">
-      </div>
-      <button class="btn-primary" onclick="addPost()">نشر الآن 🔥</button>
+  <div id="registerBox" style="display:none">
+    <h3>إنشاء حساب</h3>
+    <div class="input-group">
+      <input type="email" id="regEmail" placeholder="الإيميل">
     </div>
-
-    <div id="postsList"></div>
-
-    <button class="btn-logout" onclick="logout()">تسجيل الخروج</button>
-
-    <div style="text-align:center; margin-top: 30px; font-size: 12px; color: #555;">
-      HOota Social © 2026 | النسخة المطورة V3.0
+    <div class="input-group">
+      <input type="password" id="regPass" placeholder="كلمة المرور">
     </div>
+    <div class="input-group">
+      <input type="password" id="regPass2" placeholder="تأكيد كلمة المرور">
+    </div>
+    <button onclick="register()" id="registerBtn">إنشاء الحساب</button>
+    <div id="registerMsg"></div>
+    <div class="switch" onclick="showLogin()">عندي حساب</div>
+  </div>
+
+  <div id="checkEmailBox" style="display:none">
+    <h3>راجع إيميلك</h3>
+    <div class="notice">
+      أرسلنا رابط تأكيد على <br><b id="checkEmailText"></b><br><br>
+      افتح إيميلك واضغط "تأكيد الحساب"
+    </div>
+    <p style="font-size:13px;opacity:0.8;text-align:center">ما وصل؟ راجع Spam أو</p>
+    <button onclick="resendEmail()" id="resendBtn" style="background:#374151;">إعادة إرسال</button>
+    <div class="switch" onclick="showLogin()">رجوع</div>
+  </div>
+
+  <div id="forgotBox" style="display:none">
+    <h3>استعادة كلمة المرور</h3>
+    <p style="font-size:14px;opacity:0.8;text-align:center;margin-bottom:16px">دخل إيميلك وهنرسل لك رابط التعيين</p>
+    <div class="input-group">
+      <input type="email" id="forgotEmail" placeholder="الإيميل">
+    </div>
+    <button onclick="forgotPassword()" id="forgotBtn">إرسال الرابط</button>
+    <div id="forgotMsg"></div>
+    <div class="switch" onclick="showLogin()">رجوع</div>
+  </div>
+
+  <div id="resetBox" style="display:none">
+    <h3>كلمة مرور جديدة</h3>
+    <div class="input-group">
+      <input type="password" id="newPass" placeholder="كلمة المرور الجديدة">
+    </div>
+    <div class="input-group">
+      <input type="password" id="newPass2" placeholder="تأكيد كلمة المرور">
+    </div>
+    <button onclick="resetPassword()" id="resetBtn">حفظ</button>
+    <div id="resetMsg"></div>
   </div>
 
 </div>
 
-<a href="https://wa.me/249900623733" class="whatsapp-float" target="_blank">
-  <svg width="30" height="30" fill="white" viewBox="0 0 16 16">
-    <path d="M13.601 2.326A7.854 7.854 0 0 0 7.994 0C3.627 0 .068 3.558.064 7.926c0 1.399.366 2.76 1.057 3.965L0 16l4.204-1.102a7.933 7.933 0 0 0 3.79.965h.004c4.368 0 7.926-3.558 7.93-7.93A7.898 7.898 0 0 0 13.6 2.326zM7.994 14.521a6.573 6.573 0 0 1-3.356-.92l-.24-.144-2.494.654.666-2.433-.156-.251a6.56 6.56 0 0 1-1.007-3.505c0-3.626 2.957-6.584 6.591-6.584a6.56 6.56 0 0 1 4.66 1.931 6.557 6.557 0 0 1 1.928 4.66c-.004 3.639-2.961 6.592-6.592 6.592zm3.615-4.934c-.197-.099-1.17-.578-1.353-.646-.182-.065-.315-.099-.445.099-.133.197-.513.646-.627.775-.114.133-.232.148-.43.05-.197-.1-.836-.308-1.592-.985-.59-.525-.985-1.175-1.103-1.372-.114-.198-.011-.304.088-.403.087-.088.197-.232.296-.346.1-.114.133-.198.198-.33.065-.134.034-.248-.015-.347-.05-.099-.445-1.076-.612-1.47-.16-.389-.323-.335-.445-.34-.114-.007-.247-.007-.38-.007a.729.729 0 0 0-.529.247c-.182.198-.691.677-.691 1.654 0 .977.71 1.916.81 2.049.098.133 1.394 2.132 3.383 2.992.47.205.84.326 1.129.418.475.152.904.129 1.246.08.38-.058 1.171-.48 1.338-.943.164-.464.164-.86.114-.943-.049-.084-.182-.133-.38-.232z"/>
-  </svg>
-</a>
+<!-- 🟢 POSTS -->
+<div id="appBox" style="display:none">
 
+  <div class="card" style="margin-bottom:16px">
+    <h3>اكتب بوست</h3>
+    <div class="input-group">
+      <input type="text" id="postInput" placeholder="شنو في بالك؟">
+    </div>
+    <button onclick="addPost()">نشر</button>
+  </div>
+
+  <div id="postsList"></div>
+
+  <button class="logout" onclick="logout()">تسجيل خروج</button>
+
+  <div class="whatsapp">
+    <a href="https://wa.me/249900623733" target="_blank">
+      💬 تواصل واتساب
+    </a>
+  </div>
+
+  <div class="footer">
+    جميع الحقوق محفوظة لدى HOota Social © 2026
+  </div>
+
+</div>
+
+</div>
+
+<!-- SUPABASE -->
 <script type="module">
 import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
 
 const supabaseUrl = "https://ymepvanoqgvntcuacnhm.supabase.co";
 const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InltZXB2YW5vcWd2bnRjdWFjbmhtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYyNzE2MDMsImV4cCI6MjA5MTg0NzYwM30.T8vXyv_DsSGoas8kLpNMI3ULEA8keB2pTseHnGUlZyw";
+
 const supabase = createClient(supabaseUrl, supabaseKey);
 
-/* UI Elements */
+/* UI */
 const authBox = document.getElementById("authBox");
 const appBox = document.getElementById("appBox");
 const loginBox = document.getElementById("loginBox");
 const registerBox = document.getElementById("registerBox");
+const checkEmailBox = document.getElementById("checkEmailBox");
 const forgotBox = document.getElementById("forgotBox");
+const resetBox = document.getElementById("resetBox");
 
-/* Navigation Functions */
-window.showLogin = () => { loginBox.style.display="block"; registerBox.style.display="none"; forgotBox.style.display="none"; }
-window.showRegister = () => { loginBox.style.display="none"; registerBox.style.display="block"; forgotBox.style.display="none"; }
-window.showForgotPassword = () => { loginBox.style.display="none"; registerBox.style.display="none"; forgotBox.style.display="block"; }
-
-function showToast(msg) {
-  const t = document.createElement('div');
-  t.className = 'toast';
-  t.textContent = msg;
-  document.getElementById('toastContainer').appendChild(t);
-  setTimeout(() => t.remove(), 3000);
+/* TOGGLE FORM */
+window.showLogin = function(){
+  loginBox.style.display = "block";
+  registerBox.style.display = "none";
+  checkEmailBox.style.display = "none";
+  forgotBox.style.display = "none";
+  resetBox.style.display = "none";
+  clearMessages();
 }
 
-/* Auth Logic (Connects to your existing Supabase) */
-supabase.auth.onAuthStateChange((event, session) => {
-  if (session) {
+window.showRegister = function(){
+  loginBox.style.display = "none";
+  registerBox.style.display = "block";
+  checkEmailBox.style.display = "none";
+  forgotBox.style.display = "none";
+  resetBox.style.display = "none";
+  clearMessages();
+}
+
+window.showCheckEmail = function(email){
+  loginBox.style.display = "none";
+  registerBox.style.display = "none";
+  checkEmailBox.style.display = "block";
+  forgotBox.style.display = "none";
+  resetBox.style.display = "none";
+  document.getElementById("checkEmailText").textContent = email;
+  clearMessages();
+}
+
+window.showForgotPassword = function(){
+  loginBox.style.display = "none";
+  registerBox.style.display = "none";
+  checkEmailBox.style.display = "none";
+  forgotBox.style.display = "block";
+  resetBox.style.display = "none";
+  clearMessages();
+}
+
+window.showResetPassword = function(){
+  loginBox.style.display = "none";
+  registerBox.style.display = "none";
+  checkEmailBox.style.display = "none";
+  forgotBox.style.display = "none";
+  resetBox.style.display = "block";
+  clearMessages();
+}
+
+function clearMessages(){
+  document.getElementById("loginMsg").innerHTML = "";
+  document.getElementById("registerMsg").innerHTML = "";
+  document.getElementById("forgotMsg").innerHTML = "";
+  document.getElementById("resetMsg").innerHTML = "";
+}
+
+function showMessage(elementId, text, isError = true){
+  const el = document.getElementById(elementId);
+  el.innerHTML = `<div class="message ${isError? 'error' : 'success'}">${text}</div>`;
+}
+
+function showToast(text){
+  const container = document.getElementById("toastContainer");
+  container.innerHTML = `<div class="toast">${text}</div>`;
+  setTimeout(() => container.innerHTML = "", 3000);
+}
+
+/* HANDLE AUTH STATE - دا التعديل الأهم */
+supabase.auth.onAuthStateChange(async (event, session) => {
+  if (event === 'SIGNED_IN' && window.location.hash.includes('access_token')) {
+    showToast("تم تأكيد الحساب ✓");
+    window.history.replaceState(null, '', window.location.pathname + window.location.search);
+  }
+  
+  if (event === 'PASSWORD_RECOVERY') {
+    authBox.style.display = "block";
+    appBox.style.display = "none";
+    showResetPassword();
+    return;
+  }
+
+  if (session && session.user) {
     authBox.style.display = "none";
     appBox.style.display = "block";
     loadPosts();
   } else {
     authBox.style.display = "block";
     appBox.style.display = "none";
+    showLogin();
   }
 });
 
-window.login = async () => {
+/* INIT */
+async function initAuth(){
+  const { data: { session } } = await supabase.auth.getSession();
+  if (!session) {
+    authBox.style.display = "block";
+    appBox.style.display = "none";
+    showLogin();
+  }
+}
+
+initAuth();
+
+/* REGISTER */
+window.register = async function(){
+  const email = regEmail.value.trim();
+  const pass = regPass.value;
+  const pass2 = regPass2.value;
+  const btn = document.getElementById("registerBtn");
+
+  if(!email ||!pass){
+    showMessage("registerMsg", "املأ كل الحقول");
+    return;
+  }
+
+  if(pass!== pass2){
+    showMessage("registerMsg", "كلمات المرور غير متطابقة");
+    return;
+  }
+
+  if(pass.length < 6){
+    showMessage("registerMsg", "كلمة المرور لازم 6 أحرف على الأقل");
+    return;
+  }
+
+  btn.disabled = true;
+  btn.textContent = "جاري الإنشاء...";
+
+  const { error } = await supabase.auth.signUp({
+    email: email,
+    password: pass,
+    options: {
+        emailRedirectTo: 'https://mahmoud-kosti.github.io/hoota_social/'
+    }
+  });
+
+  btn.disabled = false;
+  btn.textContent = "إنشاء الحساب";
+
+  if(error) {
+    showMessage("registerMsg", error.message);
+  } else {
+    showCheckEmail(email);
+    showToast("تم إنشاء الحساب ✓");
+  }
+}
+
+/* RESEND EMAIL */
+window.resendEmail = async function(){
+  const email = document.getElementById("checkEmailText").textContent;
+  const btn = document.getElementById("resendBtn");
+
+  btn.disabled = true;
+  btn.textContent = "جاري الإرسال...";
+
+  const { error } = await supabase.auth.resend({
+    type: 'signup',
+    email: email,
+    options: {
+        emailRedirectTo: 'https://mahmoud-kosti.github.io/hoota_social/'
+    }
+  });
+
+  btn.disabled = false;
+  btn.textContent = "إعادة إرسال";
+
+  if(error) {
+    showMessage("registerMsg", error.message);
+  } else {
+    showToast('رسلنا الرابط تاني');
+  }
+}
+
+/* LOGIN */
+window.login = async function(){
   const btn = document.getElementById("loginBtn");
-  btn.innerText = "جاري التحقق...";
-  const { error } = await supabase.auth.signInWithPassword({
+  btn.disabled = true;
+  btn.textContent = "جاري الدخول...";
+
+  const { data, error } = await supabase.auth.signInWithPassword({
     email: logEmail.value,
     password: logPass.value
   });
-  if(error) showToast("خطأ: " + error.message);
-  btn.innerText = "فتح الحساب 🚀";
+
+  btn.disabled = false;
+  btn.textContent = "دخول";
+
+  if(error) {
+    showMessage("loginMsg", error.message);
+  } else if(data.user &&!data.user.email_confirmed_at){
+    showCheckEmail(data.user.email);
+  } else {
+    showToast("أهلاً بك ✓");
+  }
 }
 
-window.register = async () => {
-  if(regPass.value !== regPass2.value) return showToast("كلمات المرور غير متطابقة");
-  const { error } = await supabase.auth.signUp({ email: regEmail.value, password: regPass.value });
-  if(error) showToast(error.message); else showToast("تم! راجع بريدك الإلكتروني");
+/* FORGOT PASSWORD */
+window.forgotPassword = async function(){
+  const email = forgotEmail.value.trim();
+  const btn = document.getElementById("forgotBtn");
+
+  if(!email){
+    showMessage("forgotMsg", "دخل إيميلك أول");
+    return;
+  }
+
+  btn.disabled = true;
+  btn.textContent = "جاري الإرسال...";
+
+  const { error } = await supabase.auth.resetPasswordForEmail(email, {
+    redirectTo: 'https://mahmoud-kosti.github.io/hoota_social/'
+  });
+
+  btn.disabled = false;
+  btn.textContent = "إرسال الرابط";
+
+  if(error) {
+    showMessage("forgotMsg", error.message);
+  } else {
+    showMessage("forgotMsg", "رسلنا رابط التعيين على إيميلك", false);
+  }
 }
 
-window.logout = async () => { await supabase.auth.signOut(); showToast("تم تسجيل الخروج"); }
+/* RESET PASSWORD */
+window.resetPassword = async function(){
+  const pass = newPass.value;
+  const pass2 = newPass2.value;
+  const btn = document.getElementById("resetBtn");
 
-window.addPost = async () => {
+  if(!pass ||!pass2){
+    showMessage("resetMsg", "املأ الحقلين");
+    return;
+  }
+
+  if(pass!== pass2){
+    showMessage("resetMsg", "كلمات المرور غير متطابقة");
+    return;
+  }
+
+  if(pass.length < 6){
+    showMessage("resetMsg", "كلمة المرور لازم 6 أحرف على الأقل");
+    return;
+  }
+
+  btn.disabled = true;
+  btn.textContent = "جاري الحفظ...";
+
+  const { error } = await supabase.auth.updateUser({ password: pass });
+
+  btn.disabled = false;
+  btn.textContent = "حفظ";
+
+  if(error) {
+    showMessage("resetMsg", error.message);
+  } else {
+    showToast("تم تغيير كلمة المرور ✓");
+    await supabase.auth.signOut();
+    setTimeout(() => {
+      window.location.hash = "";
+      showLogin();
+    }, 1500);
+  }
+}
+
+/* LOGOUT */
+window.logout = async function(){
+  await supabase.auth.signOut();
+  showToast("تم تسجيل الخروج");
+}
+
+/* ADD POST */
+window.addPost = async function(){
   const content = postInput.value.trim();
-  if(!content) return;
+  if(!content) {
+    showToast("اكتب حاجة أول");
+    return;
+  }
+
   const { data: { user } } = await supabase.auth.getUser();
-  const { error } = await supabase.from("posts").insert([{ email: user.email, content, user_id: user.id }]);
-  if(!error) { postInput.value=""; loadPosts(); showToast("تم النشر بنجاح ✨"); }
+
+  if(!user){
+    showToast("سجل دخول أولاً");
+    return;
+  }
+
+  const { error } = await supabase.from("posts").insert([
+    {
+      email: user.email,
+      content,
+      user_id: user.id
+    }
+  ]);
+
+  if(error) {
+    showToast('فشل النشر');
+    return;
+  }
+
+  postInput.value = "";
+  showToast("تم النشر ✓");
+  loadPosts();
 }
 
-async function loadPosts() {
+/* DELETE POST */
+window.deletePost = async function(postId){
+  if (!confirm('متأكد عايز تحذف البوست؟')) return
+
+  const { error } = await supabase
+   .from('posts')
+   .delete()
+   .eq('id', postId)
+
+  if (error) {
+    showToast('فشل الحذف');
+  } else {
+    document.getElementById(`post-${postId}`).remove()
+    showToast("تم الحذف");
+  }
+}
+
+/* EDIT POST */
+window.editPost = async function(postId, oldContent){
+  const newContent = prompt('اكتب المحتوى الجديد:', oldContent)
+  if (newContent === null || newContent === oldContent) return
+
+  const { error } = await supabase
+   .from('posts')
+   .update({ content: newContent })
+   .eq('id', postId)
+
+  if (error) {
+    showToast('فشل التعديل');
+  } else {
+    showToast("تم التعديل ✓");
+    loadPosts()
+  }
+}
+
+/* LOAD POSTS */
+async function loadPosts(){
   const { data: { user } } = await supabase.auth.getUser();
-  const { data } = await supabase.from("posts").select("*").order("created_at", { ascending: false });
-  const list = document.getElementById("postsList");
-  list.innerHTML = "";
-  data.forEach(p => {
-    const isOwner = user && user.id === p.user_id;
-    list.innerHTML += `
-      <div class="post">
-        <div class="email">${p.email.split('@')[0]}</div>
+
+  const { data, error } = await supabase
+   .from("posts")
+   .select("*")
+   .order("created_at", { ascending: false });
+
+  if(error) {
+    showToast('خطأ في تحميل البوستات');
+    return;
+  }
+
+  postsList.innerHTML = "";
+
+  data.forEach(p=>{
+    const isOwner = user && user.id === p.user_id
+
+    postsList.innerHTML += `
+      <div class="post" id="post-${p.id}">
+        <div class="email">${p.email}</div>
         <div class="content">${p.content}</div>
-        ${isOwner ? `
-          <div style="display:flex; gap:10px; margin-top:15px;">
-            <button class="btn-edit" onclick="editPost('${p.id}', '${p.content}')">تعديل</button>
+        ${isOwner? `
+          <div class="actions">
+            <button class="btn-edit" onclick='editPost("${p.id}", ${JSON.stringify(p.content)})'>تعديل</button>
             <button class="btn-delete" onclick="deletePost('${p.id}')">حذف</button>
           </div>
         ` : ''}
@@ -449,19 +852,7 @@ async function loadPosts() {
     `;
   });
 }
-
-window.deletePost = async (id) => {
-  const { error } = await supabase.from('posts').delete().eq('id', id);
-  if(!error) loadPosts();
-}
-
-window.editPost = async (id, old) => {
-  const val = prompt("تعديل المنشور:", old);
-  if(val && val !== old) {
-    await supabase.from('posts').update({ content: val }).eq('id', id);
-    loadPosts();
-  }
-}
 </script>
+
 </body>
 </html>
